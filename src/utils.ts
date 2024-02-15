@@ -1,4 +1,5 @@
 import { InvalidRequestError, NoRedirectError } from "./errors";
+import mime from "mime";
 
 export function getUrl(req: Request) {
   const url = new URL(req.url).searchParams.get("url");
@@ -23,4 +24,28 @@ export function handleError(e: Error) {
   }
 
   return new Response("Internal server error", { status: 500 });
+}
+
+export function getMimeType(url: string): string | null {
+  const extension = new URL(url).pathname.split(".").pop();
+  if (!extension) {
+    return null;
+  }
+
+  return mime.getType(extension);
+}
+
+export function getProxySafeMediaHeaders(req: Request): Headers {
+  const headers = new Headers();
+  const acceptHeader = req.headers.get("accept");
+  if (acceptHeader) {
+    headers.set("accept", acceptHeader);
+  }
+
+  const acceptEncodingHeader = req.headers.get("accept-encoding");
+  if (acceptEncodingHeader) {
+    headers.set("accept-encoding", acceptEncodingHeader);
+  }
+
+  return headers;
 }

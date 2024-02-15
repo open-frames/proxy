@@ -2,7 +2,12 @@ import { CORS_HEADERS } from "./constants";
 import { InvalidRequestError, NoRedirectError } from "./errors";
 import { extractMetaTags } from "./parser";
 import type { GetMetadataResponse, PostRedirectResponse } from "./types";
-import { getUrl, handleError } from "./utils";
+import {
+  getMimeType,
+  getProxySafeMediaHeaders,
+  getUrl,
+  handleError,
+} from "./utils";
 
 export async function handleGet(req: Request) {
   try {
@@ -83,20 +88,23 @@ export async function handleMedia(req: Request) {
     const url = getUrl(req);
     console.log(`Processing handleImage request for ${url}`);
 
-    const headers = new Headers();
-    const acceptHeader = req.headers.get("accept");
-    if (acceptHeader) {
-      headers.set("accept", acceptHeader);
-    }
-    const response = await fetch(url, {
-      headers,
+    const media = await fetch(url, {
+      headers: getProxySafeMediaHeaders(req),
     });
 
-    return new Response(response.body, {
-      headers: {
-        "content-type": response.headers.get("content-type") || "image/png",
-        ...CORS_HEADERS,
-      },
+    const responseHeaders = new Headers({ ...CORS_HEADERS });
+    responseHeaders.set(
+      "content-type",
+      media.headers.get("content-type") || getMimeType(url) || "image/png"
+    );
+
+    const responseEncoding = media.headers.get("encoding");
+    if (responseEncoding) {
+      responseHeaders.set("encoding", media.headers.get("encoding")!);
+    }
+
+    return new Response(media.body, {
+      headers: responseHeaders,
     });
   } catch (e) {
     return handleError(e as Error);
