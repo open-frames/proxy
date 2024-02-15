@@ -25,10 +25,6 @@ export function start(port: number): Server {
 
       const path = getRequestPath(req);
       if (req.method === "GET") {
-        if (path === "/redirect") {
-          return handleRedirect(req);
-        }
-
         if (path === "/media") {
           return handleMedia(req);
         }
@@ -39,6 +35,10 @@ export function start(port: number): Server {
       }
 
       if (req.method === "POST") {
+        if (path === "/redirect") {
+          return handleRedirect(req);
+        }
+
         return handlePost(req);
       }
 
