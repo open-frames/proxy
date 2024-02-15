@@ -14,7 +14,7 @@ export async function handleGet(req: Request) {
     const data = await downloadAndExtract(url);
     const res: GetMetadataResponse = {
       url,
-      metaTags: data,
+      extractedTags: data,
     };
 
     return Response.json(res, {
@@ -40,7 +40,7 @@ export async function handlePost(req: Request) {
 
     const res: GetMetadataResponse = {
       url,
-      metaTags: data,
+      extractedTags: data,
     };
 
     return Response.json(res, {
