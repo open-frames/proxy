@@ -62,9 +62,10 @@ export async function handlePost(req: Request) {
 export async function handleRedirect(req: Request) {
   try {
     const url = getUrl(req);
+    const body = await req.json();
     console.log(`Processing handleRedirect request for ${url}`);
 
-    const res = await findRedirect(url);
+    const res = await findRedirect(url, body);
 
     return Response.json(res, {
       headers: {
@@ -135,9 +136,20 @@ export async function downloadAndExtract(url: string) {
   return extractMetaTags(text);
 }
 
-export async function findRedirect(url: string): Promise<PostRedirectResponse> {
+export async function findRedirect(
+  url: string,
+  body: any
+): Promise<PostRedirectResponse> {
   const signal = AbortSignal.timeout(10000);
-  const response = await fetch(url, { signal, redirect: "manual" });
+  const response = await fetch(url, {
+    method: "POST",
+    body: JSON.stringify(body),
+    headers: {
+      "content-type": "application/json",
+    },
+    signal,
+    redirect: "manual",
+  });
   const location = response.headers.get("location");
   if (response.status !== 302 || !location) {
     throw new NoRedirectError();

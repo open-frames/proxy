@@ -35,7 +35,7 @@ describe("postRedirect", () => {
 
   test("should handle 302 correctly", async () => {
     const url = `http://localhost:${PORT}/302`;
-    const data = await findRedirect(url);
+    const data = await findRedirect(url, {});
     expect(data).toEqual({
       originalUrl: url,
       redirectedTo: REDIRECT_DESTINATION,
@@ -44,12 +44,12 @@ describe("postRedirect", () => {
 
   test("should error on 301", async () => {
     const url = `http://localhost:${PORT}/301`;
-    expect(findRedirect(url)).rejects.toThrow(new NoRedirectError());
+    expect(findRedirect(url, {})).rejects.toThrow(new NoRedirectError());
   });
 
   test("should error on 200", async () => {
     const url = `http://localhost:${PORT}/200`;
-    expect(findRedirect(url)).rejects.toThrow(new NoRedirectError());
+    expect(findRedirect(url, {})).rejects.toThrow(new NoRedirectError());
   });
 });
 
