@@ -10,6 +10,9 @@
 	"exports": {
 		"bun": "./src/index.ts"
 	},
+	"engines": {
+		"node": ">=19"
+	},
 	"devDependencies": {
 		"@types/node": "^20.11.19",
 		"eslint": "^8.56.0",
