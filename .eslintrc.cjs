@@ -24,5 +24,5 @@ module.exports = {
 		'simple-import-sort/exports': 'error',
 	},
 	plugins: ['@typescript-eslint', 'prettier', 'vitest', 'promise', 'simple-import-sort'],
-	ignorePatterns: ['dist', 'node_modules', 'packages/bot-kit-pro/src/migrations', 'packages/grpc-api-client/src/gen'],
+	ignorePatterns: ['dist', 'node_modules'],
 };
