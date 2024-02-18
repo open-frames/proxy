@@ -1,170 +1,140 @@
-import { CORS_HEADERS } from "./constants";
-import { InvalidRequestError, NoRedirectError } from "./errors";
-import { extractMetaTags } from "./parser";
-import type { GetMetadataResponse, PostRedirectResponse } from "./types";
-import {
-  getMimeType,
-  getProxySafeMediaHeaders,
-  getUrl,
-  handleError,
-} from "./utils";
+import { CORS_HEADERS } from './constants';
+import { ErrorResponse } from './errors';
+import { extractMetaTags, getFrameInfo } from './parser';
+import type { GetMetadataResponse, PostRedirectResponse } from './types';
+import { getMimeType, getProxySafeMediaHeaders, getUrl, metaTagsToObject } from './utils';
 
 export async function handleGet(req: Request) {
-  try {
-    const url = getUrl(req);
-    console.log(`Processing get metadata request for ${url}`);
-    if (!url) {
-      return new Response("Missing url query param", { status: 400 });
-    }
-    const data = await downloadAndExtract(url);
-    const res: GetMetadataResponse = {
-      url,
-      extractedTags: data,
-    };
+	const url = getUrl(req);
+	console.log(`Processing get metadata request for ${url}`);
+	if (!url) {
+		return new Response('Missing url query param', { status: 400 });
+	}
+	const data = await downloadAndExtract(url);
+	const res: GetMetadataResponse = {
+		url,
+		extractedTags: metaTagsToObject(data),
+	};
 
-    return Response.json(res, {
-      headers: {
-        "content-type": "application/json",
-        ...CORS_HEADERS,
-      },
-    });
-  } catch (e) {
-    return handleError(e as Error);
-  }
+	return Response.json(res, {
+		headers: {
+			'content-type': 'application/json',
+			...CORS_HEADERS,
+		},
+	});
 }
 
 export async function handlePost(req: Request) {
-  try {
-    const url = getUrl(req);
-    const body = await req.json();
-    console.log(`Processing POST request for ${url}`);
-    if (!url) {
-      return new Response("Missing url query param", { status: 400 });
-    }
-    const data = await postAndExtract(url, body);
+	const url = getUrl(req);
+	const body = await req.json();
+	console.log(`Processing POST request for ${url}`);
+	if (!url) {
+		return new Response('Missing url query param', { status: 400 });
+	}
+	const data = await postAndExtract(url, body);
 
-    const res: GetMetadataResponse = {
-      url,
-      extractedTags: data,
-    };
+	const res: GetMetadataResponse = {
+		url,
+		extractedTags: metaTagsToObject(data),
+		frameInfo: getFrameInfo(data),
+	};
 
-    return Response.json(res, {
-      headers: {
-        "content-type": "application/json",
-        ...CORS_HEADERS,
-      },
-    });
-  } catch (e) {
-    console.error(e);
-    if (e instanceof InvalidRequestError) {
-      return new Response("Missing url query param", { status: 400 });
-    }
-
-    return new Response("Internal server error", { status: 500 });
-  }
+	return Response.json(res, {
+		headers: {
+			'content-type': 'application/json',
+			...CORS_HEADERS,
+		},
+	});
 }
 
 export async function handleRedirect(req: Request) {
-  try {
-    const url = getUrl(req);
-    const body = await req.json();
-    console.log(`Processing handleRedirect request for ${url}`);
+	const url = getUrl(req);
+	const body = await req.json();
+	console.log(`Processing handleRedirect request for ${url}`);
 
-    const res = await findRedirect(url, body);
+	const res = await findRedirect(url, body);
 
-    return Response.json(res, {
-      headers: {
-        "content-type": "application/json",
-        ...CORS_HEADERS,
-      },
-    });
-  } catch (e) {
-    return handleError(e as Error);
-  }
+	return Response.json(res, {
+		headers: {
+			'content-type': 'application/json',
+			...CORS_HEADERS,
+		},
+	});
 }
 
 export async function handleMedia(req: Request) {
-  try {
-    const url = getUrl(req);
-    console.log(`Processing handleImage request for ${url}`);
+	const url = getUrl(req);
+	console.log(`Processing handleImage request for ${url}`);
 
-    const media = await fetch(url, {
-      headers: getProxySafeMediaHeaders(req),
-    });
+	const media = await fetch(url, {
+		headers: getProxySafeMediaHeaders(req),
+	});
+	const mediaHeaders = Object.fromEntries(media.headers.entries());
+	const responseHeaders = new Headers({ ...mediaHeaders, ...CORS_HEADERS });
+	if (!responseHeaders.has('content-type')) {
+		const urlMimeType = getMimeType(url);
+		if (urlMimeType) {
+			responseHeaders.set('content-type', urlMimeType);
+		}
+	}
 
-    const responseHeaders = new Headers({ ...CORS_HEADERS });
-    responseHeaders.set(
-      "content-type",
-      media.headers.get("content-type") || getMimeType(url) || "image/png"
-    );
-
-    const responseEncoding = media.headers.get("encoding");
-    if (responseEncoding) {
-      responseHeaders.set("encoding", media.headers.get("encoding")!);
-    }
-
-    return new Response(media.body, {
-      headers: responseHeaders,
-    });
-  } catch (e) {
-    return handleError(e as Error);
-  }
+	return new Response(media.body, {
+		headers: responseHeaders,
+	});
 }
 
 export async function postAndExtract(url: string, body: any) {
-  const signal = AbortSignal.timeout(10000);
-  const response = await fetch(url, {
-    method: "POST",
-    redirect: "follow",
-    body: JSON.stringify(body),
-    headers: {
-      "content-type": "application/json",
-    },
-    signal,
-  });
+	const signal = AbortSignal.timeout(10000);
+	const response = await fetch(url, {
+		method: 'POST',
+		redirect: 'follow',
+		body: JSON.stringify(body),
+		headers: {
+			'content-type': 'application/json',
+		},
+		signal,
+	});
 
-  if (response.status >= 400) {
-    throw new Error(`Request failed with status ${response.status}`);
-  }
+	if (response.status >= 400) {
+		throw new Error(`Request failed with status ${response.status}`);
+	}
 
-  const text = await response.text();
-  return extractMetaTags(text);
+	const text = await response.text();
+	return extractMetaTags(text);
 }
 
 export async function downloadAndExtract(url: string) {
-  const signal = AbortSignal.timeout(10000);
-  const response = await fetch(url, { redirect: "follow", signal });
-  //   TODO: Better error handling
-  if (response.status >= 400) {
-    throw new Error(`Request failed with status ${response.status}`);
-  }
+	const signal = AbortSignal.timeout(10000);
+	const response = await fetch(url, { redirect: 'follow', signal });
+	//   TODO: Better error handling
+	if (response.status >= 400) {
+		throw new ErrorResponse(`Request to ${url} failed`, response.status);
+	}
 
-  // TODO: Stream response until you see </head> and then stop
-  const text = await response.text();
-  return extractMetaTags(text);
+	// TODO: Stream response until you see </head> and then stop
+	const text = await response.text();
+
+	return extractMetaTags(text);
 }
 
-export async function findRedirect(
-  url: string,
-  body: any
-): Promise<PostRedirectResponse> {
-  const signal = AbortSignal.timeout(10000);
-  const response = await fetch(url, {
-    method: "POST",
-    body: JSON.stringify(body),
-    headers: {
-      "content-type": "application/json",
-    },
-    signal,
-    redirect: "manual",
-  });
-  const location = response.headers.get("location");
-  if (response.status !== 302 || !location) {
-    throw new NoRedirectError();
-  }
+export async function findRedirect(url: string, body: any): Promise<PostRedirectResponse> {
+	const signal = AbortSignal.timeout(10000);
+	const response = await fetch(url, {
+		method: 'POST',
+		body: JSON.stringify(body),
+		headers: {
+			'content-type': 'application/json',
+		},
+		signal,
+		redirect: 'manual',
+	});
+	const location = response.headers.get('location');
+	if (response.status !== 302 || !location) {
+		throw new ErrorResponse('No redirect found', 404);
+	}
 
-  return {
-    originalUrl: url,
-    redirectedTo: location,
-  };
+	return {
+		originalUrl: url,
+		redirectedTo: location,
+	};
 }

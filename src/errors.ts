@@ -1,3 +1,8 @@
-export class NoRedirectError extends Error {}
+export class ErrorResponse extends Error {
+	statusCode: number;
 
-export class InvalidRequestError extends Error {}
+	constructor(message: string, statusCode: number) {
+		super(message);
+		this.statusCode = statusCode;
+	}
+}
