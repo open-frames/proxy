@@ -1,18 +1,9 @@
 {
-	"name": "@open-frames/proxy",
-	"module": "dist/index.js",
-	"type": "module",
-	"scripts": {
-		"start": "node dist/index.js",
-		"prestart": "npm run build",
-		"build": "tsc",
-		"test": "vitest"
-	},
-	"engines": {
-		"node": ">=19"
-	},
+	"name": "open-frames-proxy",
+	"packageManager": "yarn@4.1.0",
+	"license": "MIT",
+	"private": true,
 	"devDependencies": {
-		"@types/node": "^20.11.19",
 		"eslint": "^8.56.0",
 		"eslint-config-prettier": "^9.1.0",
 		"eslint-config-standard": "^17.1.0",
@@ -22,14 +13,11 @@
 		"eslint-plugin-promise": "^6.1.1",
 		"eslint-plugin-simple-import-sort": "^12.0.0",
 		"eslint-plugin-vitest": "^0.3.22",
-		"typescript": "^5.3.3",
-		"vitest": "^1.3.0"
-	},
-	"peerDependencies": {
+		"prettier": "^3.2.5",
 		"typescript": "^5.3.3"
 	},
-	"dependencies": {
-		"cheerio": "^1.0.0-rc.12",
-		"mime": "^4.0.1"
-	}
+	"workspaces": [
+		"packages/*",
+		"examples/*"
+	]
 }

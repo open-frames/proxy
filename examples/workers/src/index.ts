@@ -1,4 +1,4 @@
-import { handleRequest } from '../../../src';
+import { handleRequest } from '@open-frames/proxy';
 
 export interface Env {}
 
