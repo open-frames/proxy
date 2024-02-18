@@ -1,5 +1,3 @@
-import { OpenFrameButton } from './types';
-
 // Prefixes for frames. Deliberately leaving out the trailing colon on fc:frame to allow for matching
 // that token exactly. Requires some special care later to ensure it
 export const FRAMES_PREFIXES = ['of:', 'fc:frame'] as const;

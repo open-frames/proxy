@@ -1,6 +1,7 @@
 import { load } from 'cheerio';
-import { ALLOWED_ACTIONS, FRAMES_PREFIXES, TAG_PREFIXES } from './constants';
-import { DeepPartial, OpenFrameButton, OpenFrameImage, OpenFrameResult } from './types';
+
+import { ALLOWED_ACTIONS, FRAMES_PREFIXES, TAG_PREFIXES } from './constants.js';
+import { DeepPartial, OpenFrameButton, OpenFrameImage, OpenFrameResult } from './types.js';
 
 type MetaTag = [string, string];
 
@@ -30,11 +31,15 @@ export function extractMetaTags(html: string, tagPrefixes = TAG_PREFIXES) {
 	}, []);
 }
 
-const requiredFrameFields: (keyof OpenFrameResult)[] = ['acceptedClients', 'image'];
+const requiredFrameFields: (keyof OpenFrameResult)[] = ['acceptedClients', 'image', 'ogImage'];
 
 export function getFrameInfo(metaTags: MetaTag[]): OpenFrameResult | undefined {
 	const frameInfo: DeepPartial<OpenFrameResult> = {};
 	for (const [key, value] of metaTags) {
+		if (key === 'og:image') {
+			frameInfo.ogImage = value;
+			continue;
+		}
 		for (const prefix of FRAMES_PREFIXES) {
 			if (key.startsWith(prefix)) {
 				const cleanedKey = removeFramesPrefix(key, prefix);
@@ -54,7 +59,8 @@ function updateFrameResult(frameInfo: DeepPartial<OpenFrameResult>, key: string,
 		// This would be fc:frame
 		case key === '':
 			frameInfo.acceptedClients = frameInfo.acceptedClients || {};
-			frameInfo.acceptedClients['farcaster'] = value;
+			frameInfo.acceptedClients.farcaster = value;
+			break;
 		// fc:frame:image or of:image
 		case key === 'image':
 			frameInfo.image = frameInfo.image || {};
@@ -84,14 +90,13 @@ function updateFrameResult(frameInfo: DeepPartial<OpenFrameResult>, key: string,
 			break;
 		case key.startsWith('accepts:'):
 			frameInfo.acceptedClients = frameInfo.acceptedClients || {};
-			const client = key.replace('accepts:', '');
-			frameInfo.acceptedClients[client] = value;
+			frameInfo.acceptedClients[key.replace('accepts:', '')] = value;
 			break;
 	}
 }
 
 function updateFrameButton(frameInfo: DeepPartial<OpenFrameResult>, key: string, value: string) {
-	const [_, buttonIndex, maybeField] = key.split(':');
+	const [, buttonIndex, maybeField] = key.split(':');
 	if (!buttonIndex || isNaN(parseInt(buttonIndex))) {
 		return;
 	}

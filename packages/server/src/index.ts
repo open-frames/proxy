@@ -1,7 +1,8 @@
-import { CORS_HEADERS } from './constants';
-import { ErrorResponse } from './errors';
-import { handleGet, handleMedia, handlePost, handleRedirect } from './handlers';
-import { getRequestPath } from './utils';
+import { CORS_HEADERS } from './constants.js';
+import { ErrorResponse } from './errors.js';
+import { handleGet, handleMedia, handlePost, handleRedirect } from './handlers.js';
+import { getRequestPath } from './utils.js';
+export * from './types.js';
 
 export async function handleRequest(req: Request): Promise<Response> {
 	try {

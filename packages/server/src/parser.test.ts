@@ -1,9 +1,11 @@
-import { beforeAll, afterAll, describe, expect, test } from 'vitest';
-import { downloadAndExtract } from './handlers';
-import { createServer, Server } from 'node:http';
 import { readFile } from 'node:fs/promises';
-import { metaTagsToObject } from './utils';
-import { getFrameInfo } from './parser';
+import { createServer, Server } from 'node:http';
+
+import { afterAll, beforeAll, describe, expect, test } from 'vitest';
+
+import { downloadAndExtract } from './handlers.js';
+import { getFrameInfo } from './parser.js';
+import { metaTagsToObject } from './utils.js';
 
 const EXPECTED_FRAME_IMAGE = 'test-image';
 const EXPECTED_FRAME_POST_URL = 'post-url';
@@ -69,6 +71,7 @@ const testCases = [
 			'of:post_url': EXPECTED_FRAME_POST_URL,
 		},
 		expectedFrameInfo: {
+			ogImage: EXPECTED_FRAME_IMAGE,
 			acceptedClients: {
 				xmtp: '1',
 			},
@@ -89,6 +92,7 @@ const testCases = [
 			'of:post_url': EXPECTED_FRAME_POST_URL,
 		},
 		expectedFrameInfo: {
+			ogImage: EXPECTED_FRAME_IMAGE,
 			acceptedClients: {
 				farcaster: EXPECTED_FRAME_FARCASTER_VERSION,
 				xmtp: EXPECTED_FRAME_XMTP_VERSION,
@@ -123,6 +127,7 @@ const testCases = [
 			'og:image': EXPECTED_FRAME_IMAGE,
 		},
 		frameInfo: {
+			ogImage: EXPECTED_FRAME_IMAGE,
 			acceptedClients: {
 				xmtp: EXPECTED_FRAME_XMTP_VERSION,
 				lens: '2',

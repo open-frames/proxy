@@ -1,8 +1,8 @@
-import { CORS_HEADERS } from './constants';
-import { ErrorResponse } from './errors';
-import { extractMetaTags, getFrameInfo } from './parser';
-import type { GetMetadataResponse, PostRedirectResponse } from './types';
-import { getMimeType, getProxySafeMediaHeaders, getUrl, metaTagsToObject } from './utils';
+import { CORS_HEADERS } from './constants.js';
+import { ErrorResponse } from './errors.js';
+import { extractMetaTags, getFrameInfo } from './parser.js';
+import type { GetMetadataResponse, PostRedirectResponse } from './types.js';
+import { getMimeType, getProxySafeMediaHeaders, getUrl, metaTagsToObject } from './utils.js';
 
 export async function handleGet(req: Request) {
 	const url = getUrl(req);
@@ -14,6 +14,7 @@ export async function handleGet(req: Request) {
 	const res: GetMetadataResponse = {
 		url,
 		extractedTags: metaTagsToObject(data),
+		frameInfo: getFrameInfo(data),
 	};
 
 	return Response.json(res, {
@@ -83,7 +84,7 @@ export async function handleMedia(req: Request) {
 	});
 }
 
-export async function postAndExtract(url: string, body: any) {
+export async function postAndExtract(url: string, body: unknown) {
 	const signal = AbortSignal.timeout(10000);
 	const response = await fetch(url, {
 		method: 'POST',
@@ -117,7 +118,7 @@ export async function downloadAndExtract(url: string) {
 	return extractMetaTags(text);
 }
 
-export async function findRedirect(url: string, body: any): Promise<PostRedirectResponse> {
+export async function findRedirect(url: string, body: unknown): Promise<PostRedirectResponse> {
 	const signal = AbortSignal.timeout(10000);
 	const response = await fetch(url, {
 		method: 'POST',

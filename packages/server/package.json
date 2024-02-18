@@ -1,8 +1,14 @@
 {
 	"name": "@open-frames/proxy",
+	"version": "0.0.1",
 	"module": "dist/index.js",
+	"main": "dist/index.js",
 	"packageManager": "yarn@4.1.0",
 	"type": "module",
+	"publishConfig": {
+		"access": "public",
+		"provenance": true
+	},
 	"scripts": {
 		"build": "tsc",
 		"test": "vitest"

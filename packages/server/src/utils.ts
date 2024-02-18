@@ -1,5 +1,6 @@
-import { ErrorResponse } from './errors';
 import mime from 'mime';
+
+import { ErrorResponse } from './errors.js';
 
 export function getUrl(req: Request) {
 	const url = new URL(req.url).searchParams.get('url');

@@ -1,8 +1,10 @@
-import { createServer, OutgoingHttpHeaders, Server } from 'node:http';
-import { beforeAll, afterAll, describe, expect, test } from 'vitest';
-import { findRedirect, handleMedia } from './handlers';
-import { ErrorResponse } from './errors';
 import { readFile } from 'node:fs/promises';
+import { createServer, OutgoingHttpHeaders, Server } from 'node:http';
+
+import { afterAll, beforeAll, describe, expect, test } from 'vitest';
+
+import { ErrorResponse } from './errors.js';
+import { findRedirect, handleMedia } from './handlers.js';
 
 describe('postRedirect', () => {
 	const PORT = 7777;

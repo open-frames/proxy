@@ -21,4 +21,5 @@ jobs:
           corepack enable
           corepack prepare
       - run: yarn
+      - run: yarn lint
       - run: yarn workspace @open-frames/proxy test

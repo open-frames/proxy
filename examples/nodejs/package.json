@@ -1,0 +1,19 @@
+{
+	"name": "@open-frames/proxy-nodejs",
+	"private": true,
+	"packageManager": "yarn@4.1.0",
+	"type": "module",
+	"main": "dist/index.js",
+	"module": "dist/index.js",
+	"scripts": {
+		"build": "tsc",
+		"start": "yarn build && node dist/index.js"
+	},
+	"dependencies": {
+		"@open-frames/proxy": "workspace:*",
+		"@whatwg-node/server": "0.9.25"
+	},
+	"devDependencies": {
+		"typescript": "^5.3.3"
+	}
+}

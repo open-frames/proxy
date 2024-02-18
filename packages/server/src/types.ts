@@ -1,9 +1,3 @@
-export type GetMetadataResponse = {
-	url: string;
-	extractedTags: { [k: string]: string };
-	frameInfo?: OpenFrameResult;
-};
-
 export type PostRedirectResponse = {
 	originalUrl: string;
 	redirectedTo: string;
@@ -45,4 +39,11 @@ export type OpenFrameResult = {
 	postUrl?: string;
 	textInput?: TextInput;
 	buttons?: { [k: string]: OpenFrameButton };
+	ogImage: string;
+};
+
+export type GetMetadataResponse = {
+	url: string;
+	extractedTags: { [k: string]: string };
+	frameInfo?: OpenFrameResult;
 };
