@@ -1,11 +1,14 @@
 {
-	"name": "frames-proxy-workers",
+	"name": "@open-frames/proxy-example-workers",
 	"version": "0.0.0",
 	"private": true,
 	"scripts": {
 		"deploy": "wrangler deploy",
 		"dev": "wrangler dev",
 		"start": "wrangler dev"
+	},
+	"dependencies": {
+		"@open-frames/proxy": "workspace:*"
 	},
 	"devDependencies": {
 		"@cloudflare/workers-types": "^4.20240208.0",

@@ -1,0 +1,17 @@
+{
+	"compilerOptions": {
+		"composite": true,
+		"target": "ES2021",
+		"lib": ["ES2021"],
+		"module": "ES2022",
+		"esModuleInterop": true,
+		"moduleResolution": "Bundler",
+		"declaration": true,
+		"declarationMap": true,
+		"sourceMap": true,
+		"forceConsistentCasingInFileNames": true,
+		"strict": true,
+		"strictPropertyInitialization": true,
+		"skipLibCheck": true
+	}
+}
