@@ -1,62 +1,38 @@
-import type { Server } from "bun";
-import { CORS_HEADERS, PORT } from "./constants.ts";
-import {
-  handleGet,
-  handleMedia,
-  handlePost,
-  handleRedirect,
-} from "./handlers.ts";
-import { getRequestPath } from "./utils.ts";
+import { CORS_HEADERS } from './constants';
+import { ErrorResponse } from './errors';
+import { handleGet, handleMedia, handlePost, handleRedirect } from './handlers';
+import { getRequestPath } from './utils';
 
-console.log(`Starting server on port ${PORT}`);
+export async function handleRequest(req: Request): Promise<Response> {
+	try {
+		if (req.method === 'OPTIONS') {
+			return new Response('ok', { headers: CORS_HEADERS });
+		}
 
-/**
- * Start the server on a given port
- * @param port Server port
- * @returns [Server](https://bun.sh/docs/api/http)
- */
-export function start(port: number): Server {
-  return Bun.serve({
-    port,
-    fetch(req) {
-      if (req.method === "OPTIONS") {
-        return new Response("ok", { headers: CORS_HEADERS });
-      }
+		const path = getRequestPath(req);
+		if (req.method === 'GET') {
+			if (path === '/media') {
+				return handleMedia(req);
+			}
 
-      const path = getRequestPath(req);
-      if (req.method === "GET") {
-        if (path === "/media") {
-          return handleMedia(req);
-        }
+			if (path === '/') {
+				return handleGet(req);
+			}
+		}
 
-        if (path === "/") {
-          return handleGet(req);
-        }
-      }
+		if (req.method === 'POST') {
+			if (path === '/redirect') {
+				return handleRedirect(req);
+			}
 
-      if (req.method === "POST") {
-        if (path === "/redirect") {
-          return handleRedirect(req);
-        }
+			return handlePost(req);
+		}
+	} catch (e) {
+		if (e instanceof ErrorResponse) {
+			return Response.json({ error: e.message }, { status: e.statusCode });
+		}
+		return Response.json({ error: e }, { status: 500 });
+	}
 
-        return handlePost(req);
-      }
-
-      return new Response("Not found", { status: 404 });
-    },
-  });
+	return new Response('Not found', { status: 404 });
 }
-
-function getPort() {
-  if (process.env.PORT) {
-    return parseInt(process.env.PORT);
-  }
-  return PORT;
-}
-
-start(getPort());
-
-process.on("SIGINT", () => {
-  console.log("Received SIGINT");
-  process.exit(0);
-});
