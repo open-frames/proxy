@@ -130,3 +130,4 @@ dist
 .pnp.*
 .yarn
 .DS_STORE
+.turbo

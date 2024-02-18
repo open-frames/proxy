@@ -7,5 +7,5 @@
 	"access": "public",
 	"baseBranch": "main",
 	"updateInternalDependencies": "patch",
-	"ignore": []
+	"ignore": ["@open-frames/proxy-example-workers", "@open-frames/proxy-example-nodejs"]
 }

@@ -1,5 +1,5 @@
 {
-	"name": "@open-frames/proxy-nodejs",
+	"name": "@open-frames/proxy-example-nodejs",
 	"private": true,
 	"packageManager": "yarn@4.1.0",
 	"type": "module",
