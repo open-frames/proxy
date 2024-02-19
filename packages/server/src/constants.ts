@@ -1,6 +1,6 @@
 // Prefixes for frames. Deliberately leaving out the trailing colon on fc:frame to allow for matching
 // that token exactly. Requires some special care later to ensure it
-export const FRAMES_PREFIXES = ['of:', 'fc:frame'] as const;
+export const FRAMES_PREFIXES = ['of:', 'fc:frame', 'hey:portal'] as const;
 // OpenGraph tag prefixes + frames prefixes
 export const TAG_PREFIXES = ['og:', ...FRAMES_PREFIXES] as const;
 // Possible values for the action field in a button
