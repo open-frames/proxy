@@ -1,4 +1,4 @@
-# OpenGraph Proxy
+# Open Frames Proxy
 
 A simple proxy server to read Frames and Open Graph tags from a URL without revealing client IP addresses.
 
