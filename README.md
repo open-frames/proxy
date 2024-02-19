@@ -2,17 +2,29 @@
 
 A simple proxy server to read Frames and Open Graph tags from a URL without revealing client IP addresses.
 
-## Setup
+## Why do Frames developers need a proxy?
 
-To install dependencies you must be using yarn@v4
+### 🙈 No IP leaks 🙈
 
-```bash
-# Enable corepack
-corepack enable
-# Set the packageManager to the value specified in this package.json
-corepack prepare
-# Install dependencies
-yarn
+If your client application is interacting with Frames servers to parse HTML and load Frames, loading images that come from Frames or Open Graph tags, or sending POST payloads to Frames servers: _you are leaking client IP addresses to Frames devs_. POST payloads are particularly dangerous, since they actually can tell the Frames developer the private IP address of a blockchain account.
+
+A malicious developer can use this information to de-anonymize anoymous accounts, target phishing attacks to an account's home city, and determine if two wallets are controlled by the same person.
+
+### 📃 Simplify HTML parsing 📃
+
+In order to make sense of a Frame or page with Open Graph tags, you need to download and parse a HTML document and extract the information you need from meta tags (images, buttons, what URL to post to, etc). This can be an error-prone process, and requires client developers to be up-to-date on all the nuances of the Frames spec.
+
+With this proxy, all parsing of the HTML and processing of the metatags happens on the server. Client devs can simply focus on rendering the information from a well-shaped data type.
+
+Here is an example of a parsed Frame:
+
+```json
+{
+	"acceptedClients": { "farcaster": "vNext" },
+	"image": { "content": "https://fc-polls-five.vercel.app/api/image?id=01032f47-e976-42ee-9e3d-3aac1324f4b8" },
+	"postUrl": "https://fc-polls-five.vercel.app/api/vote?id=01032f47-e976-42ee-9e3d-3aac1324f4b8",
+	"buttons": { "1": { "label": "Yes", "action": "post" }, "2": { "label": "No", "action": "post" } }
+}
 ```
 
 ## Contents
@@ -85,3 +97,16 @@ returns
 - `GET /media?url=$URL` Proxy a request for media (image, video, etc) to the server. Returns the full response payload
 
 For more detailed examples, check out the [client](./packages/client)
+
+## Contributing to this repository
+
+To install dependencies you must be using yarn@v4
+
+```bash
+# Enable corepack
+corepack enable
+# Set the packageManager to the value specified in this package.json
+corepack prepare
+# Install dependencies
+yarn
+```
