@@ -131,3 +131,4 @@ dist
 .yarn
 .DS_STORE
 .turbo
+.turbo/*
