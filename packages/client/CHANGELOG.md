@@ -1,5 +1,11 @@
 # @open-frames/proxy-client
 
+## 0.1.2
+
+### Patch Changes
+
+- 8bfed68: Export server types
+
 ## 0.1.1
 
 ### Patch Changes
