@@ -48,27 +48,3 @@ export async function postRedirect(url: string, payload: JSONSerializable, proxy
 export function mediaUrl(url: string, proxyUrl: string): string {
 	return `${proxyUrl}media?url=${encodeURIComponent(url)}`;
 }
-
-export default class OpenFramesProxy {
-	baseUrl: string;
-
-	constructor(baseUrl: string) {
-		this.baseUrl = baseUrl;
-	}
-
-	async readMetadata(url: string): Promise<GetMetadataResponse> {
-		return readMetadata(url, this.baseUrl);
-	}
-
-	async post(url: string, payload: JSONSerializable): Promise<GetMetadataResponse> {
-		return post(url, payload, this.baseUrl);
-	}
-
-	async postRedirect(url: string, payload: JSONSerializable): Promise<PostRedirectResponse> {
-		return postRedirect(url, payload, this.baseUrl);
-	}
-
-	mediaUrl(url: string): string {
-		return mediaUrl(url, this.baseUrl);
-	}
-}
