@@ -1,5 +1,11 @@
 # @open-frames/proxy-client
 
+## 0.1.1
+
+### Patch Changes
+
+- 5251d5f: Add exports
+
 ## 0.1.0
 
 ### Minor Changes
