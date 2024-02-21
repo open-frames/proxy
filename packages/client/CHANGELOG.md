@@ -1,5 +1,11 @@
 # @open-frames/proxy-client
 
+## 0.1.3
+
+### Patch Changes
+
+- 2ce341e: Export more types
+
 ## 0.1.2
 
 ### Patch Changes
