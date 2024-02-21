@@ -1,9 +1,9 @@
-import { GetMetadataResponse, PostRedirectResponse } from '@open-frames/proxy';
+import type { GetMetadataResponse, PostRedirectResponse } from '@open-frames/proxy';
 
 import { mediaUrl, post, postRedirect, readMetadata } from './actions.js';
 import { JSONSerializable } from './types.js';
 
-export default class OpenFramesProxy {
+export class OpenFramesProxy {
 	baseUrl: string;
 
 	constructor(baseUrl: string) {

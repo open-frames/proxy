@@ -1,3 +1,5 @@
+export type { GetMetadataResponse, PostRedirectResponse } from '@open-frames/proxy';
+
 type JSONPrimitive = string | number | boolean | null;
 // eslint-disable-next-line no-use-before-define
 type JSONObject = { [key: string]: JSONValue };
