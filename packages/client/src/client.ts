@@ -1,4 +1,4 @@
-import type { GetMetadataResponse, PostRedirectResponse } from '@open-frames/proxy';
+import type { GetMetadataResponse, PostRedirectResponse } from '@open-frames/proxy-types';
 
 import { mediaUrl, post, postRedirect, readMetadata } from './actions.js';
 import { JSONSerializable } from './types.js';
