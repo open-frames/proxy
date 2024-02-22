@@ -26,6 +26,7 @@
 		"typescript": "^5.3.3"
 	},
 	"dependencies": {
+		"@open-frames/proxy-types": "workspace:*",
 		"cheerio": "^1.0.0-rc.12",
 		"mime": "^4.0.1"
 	}

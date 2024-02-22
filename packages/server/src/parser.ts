@@ -1,7 +1,8 @@
+import type { OpenFrameButton, OpenFrameImage, OpenFrameResult } from '@open-frames/proxy-types';
 import { load } from 'cheerio';
 
 import { ALLOWED_ACTIONS, FRAMES_PREFIXES, TAG_PREFIXES } from './constants.js';
-import { DeepPartial, OpenFrameButton, OpenFrameImage, OpenFrameResult } from './types.js';
+import type { DeepPartial } from './types.js';
 
 type MetaTag = [string, string];
 

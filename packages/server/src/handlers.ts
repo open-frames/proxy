@@ -1,7 +1,8 @@
+import type { GetMetadataResponse, PostRedirectResponse } from '@open-frames/proxy-types';
+
 import { CORS_HEADERS } from './constants.js';
 import { ErrorResponse } from './errors.js';
 import { extractMetaTags, getFrameInfo } from './parser.js';
-import type { GetMetadataResponse, PostRedirectResponse } from './types.js';
 import { getMimeType, getProxySafeMediaHeaders, getUrl, metaTagsToObject } from './utils.js';
 
 export async function handleGet(req: Request) {
