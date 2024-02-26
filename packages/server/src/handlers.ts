@@ -11,7 +11,7 @@ export async function handleGet(req: Request) {
 	if (!url) {
 		return new Response('Missing url query param', { status: 400 });
 	}
-	const data = await downloadAndExtract(url);
+	const { data, headersToForward } = await downloadAndExtract(url);
 	const res: GetMetadataResponse = {
 		url,
 		extractedTags: metaTagsToObject(data),
@@ -21,6 +21,7 @@ export async function handleGet(req: Request) {
 	return Response.json(res, {
 		headers: {
 			'content-type': 'application/json',
+			...headersToForward,
 			...CORS_HEADERS,
 		},
 	});
@@ -71,6 +72,7 @@ export async function handleMedia(req: Request) {
 	const media = await fetch(url, {
 		headers: getProxySafeMediaHeaders(req),
 	});
+	// This will include the cache control headers
 	const mediaHeaders = Object.fromEntries(media.headers.entries());
 	const responseHeaders = new Headers({ ...mediaHeaders, ...CORS_HEADERS });
 	if (!responseHeaders.has('content-type')) {
@@ -113,10 +115,11 @@ export async function downloadAndExtract(url: string) {
 		throw new ErrorResponse(`Request to ${url} failed`, response.status);
 	}
 
+	const headersToForward = extractCacheHeaders(response.headers);
 	// TODO: Stream response until you see </head> and then stop
 	const text = await response.text();
 
-	return extractMetaTags(text);
+	return { data: extractMetaTags(text), headersToForward };
 }
 
 export async function findRedirect(url: string, body: unknown): Promise<PostRedirectResponse> {
@@ -139,4 +142,14 @@ export async function findRedirect(url: string, body: unknown): Promise<PostRedi
 		originalUrl: url,
 		redirectedTo: location,
 	};
+}
+
+function extractCacheHeaders(headers: Headers): { [k: string]: string | string[] } {
+	const out: { [k: string]: string | string[] } = {};
+	const cacheControl = headers.get('cache-control');
+	if (cacheControl) {
+		out['cache-control'] = cacheControl;
+	}
+
+	return out;
 }
