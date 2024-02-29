@@ -14,6 +14,7 @@ const EXPECTED_FRAME_XMTP_VERSION = '1';
 const EXPECTED_FRAME_VERSION = 'of-version';
 const EXPECTED_IMAGE_ASPECT_RATIO = '1:1';
 const EXPECTED_IMAGE_ALT = 'image-alt';
+const EXPECTED_FRAME_STATE = 'state';
 
 async function serveHtml(port: number) {
 	const server = createServer(async (req, res) => {
@@ -125,6 +126,7 @@ const testCases = [
 			'of:button:4:action': 'mint',
 			'of:button:4:target': 'mint-url',
 			'og:image': EXPECTED_FRAME_IMAGE,
+			'of:state': EXPECTED_FRAME_STATE,
 		},
 		frameInfo: {
 			ogImage: EXPECTED_FRAME_IMAGE,
@@ -138,6 +140,7 @@ const testCases = [
 				alt: EXPECTED_IMAGE_ALT,
 			},
 			postUrl: EXPECTED_FRAME_POST_URL,
+			state: EXPECTED_FRAME_STATE,
 			buttons: {
 				'1': {
 					action: 'post',

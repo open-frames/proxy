@@ -86,6 +86,9 @@ function updateFrameResult(frameInfo: DeepPartial<OpenFrameResult>, key: string,
 			frameInfo.image = frameInfo.image || {};
 			frameInfo.image.alt = value;
 			break;
+		case key === 'state':
+			frameInfo.state = value;
+			break;
 		case key.startsWith('button:'):
 			updateFrameButton(frameInfo, key, value);
 			break;
