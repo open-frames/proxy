@@ -32,7 +32,7 @@ export function extractMetaTags(html: string, tagPrefixes = TAG_PREFIXES) {
 	}, []);
 }
 
-const requiredFrameFields: (keyof OpenFrameResult)[] = ['acceptedClients', 'image', 'ogImage'];
+const requiredFrameFields: (keyof OpenFrameResult)[] = ['acceptedClients', 'image'];
 
 export function getFrameInfo(metaTags: MetaTag[]): OpenFrameResult | undefined {
 	const frameInfo: DeepPartial<OpenFrameResult> = {};

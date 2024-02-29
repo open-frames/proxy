@@ -177,7 +177,7 @@ describe('metadata parsing', () => {
 
 	for (const testCase of testCases) {
 		test(`can extract tags from ${testCase.file}`, async () => {
-			const metaTags = await downloadAndExtract(`http://localhost:${PORT}/${testCase.file}`);
+			const { data: metaTags } = await downloadAndExtract(`http://localhost:${PORT}/${testCase.file}`);
 
 			const extractedTags = metaTagsToObject(metaTags);
 			for (const [key, value] of Object.entries(testCase.expectedTags)) {
