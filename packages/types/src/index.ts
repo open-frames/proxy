@@ -34,6 +34,7 @@ export type OpenFrameResult = {
 	textInput?: TextInput;
 	buttons?: { [k: string]: OpenFrameButton };
 	ogImage: string;
+	state?: string;
 };
 
 export type GetMetadataResponse = {
