@@ -12,27 +12,27 @@ export async function handleRequest(req: Request): Promise<Response> {
 		const path = getRequestPath(req);
 		if (req.method === 'GET') {
 			if (path === '/media') {
-				return handleMedia(req);
+				return await handleMedia(req);
 			}
 
 			if (path === '/') {
-				return handleGet(req);
+				return await handleGet(req);
 			}
 		}
 
 		if (req.method === 'POST') {
 			if (path === '/redirect') {
-				return handleRedirect(req);
+				return await handleRedirect(req);
 			}
 
-			return handlePost(req);
+			return await handlePost(req);
 		}
 	} catch (e) {
 		if (e instanceof ErrorResponse) {
-			return Response.json({ error: e.message }, { status: e.statusCode });
+			return Response.json({ error: e.message }, { status: e.statusCode, headers: CORS_HEADERS });
 		}
-		return Response.json({ error: e }, { status: 500 });
+		return Response.json({ error: e }, { status: 500, headers: CORS_HEADERS });
 	}
 
-	return new Response('Not found', { status: 404 });
+	return new Response('Not found', { status: 404, headers: CORS_HEADERS });
 }

@@ -32,7 +32,7 @@ export async function handlePost(req: Request) {
 	const body = await req.json();
 	console.log(`Processing POST request for ${url}`);
 	if (!url) {
-		return new Response('Missing url query param', { status: 400 });
+		return new Response('Missing url query param', { status: 400, headers: CORS_HEADERS });
 	}
 	const data = await postAndExtract(url, body);
 
