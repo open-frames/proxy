@@ -1,5 +1,13 @@
 # @open-frames/proxy-client
 
+## 0.2.1
+
+### Patch Changes
+
+- 610ae30: Add support for State field
+- Updated dependencies [610ae30]
+  - @open-frames/proxy-types@0.1.1
+
 ## 0.2.0
 
 ### Minor Changes
