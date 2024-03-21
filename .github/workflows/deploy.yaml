@@ -30,4 +30,5 @@ jobs:
         with:
           packageManager: yarn
           apiToken: ${{ secrets.WORKERS_TOKEN }}
+          accountId: ${{ secrets.WORKERS_ACCOUNT_ID }}
           workingDirectory: examples/workers
