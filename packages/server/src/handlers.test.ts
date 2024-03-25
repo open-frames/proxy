@@ -68,8 +68,8 @@ describe('media', () => {
 				headers['content-type'] = contentType;
 			}
 			const filePath = `fixtures/${path}`;
-			const file = await readFile(filePath);
 			try {
+				const file = await readFile(filePath);
 				res.writeHead(200, headers);
 				res.end(file);
 			} catch (e) {
@@ -108,5 +108,13 @@ describe('media', () => {
 		const response = await handleMedia(mediaRequest);
 		// Use the content type from the media server, not just the file name
 		expect(response.headers.get('content-type')).toEqual('image/png');
+	});
+
+	test('should pass through status when non-200', async () => {
+		const mediaUrl = `http://localhost:${MEDIA_PORT}/doesnotexist.png`;
+		const mediaRequest = new Request(`http://localhost/media?url=${encodeURIComponent(mediaUrl)}`);
+		const response = await handleMedia(mediaRequest);
+		// Use the content type from the media server, not just the file name
+		expect(response.status).toEqual(404);
 	});
 });

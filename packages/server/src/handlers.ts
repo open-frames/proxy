@@ -72,6 +72,14 @@ export async function handleMedia(req: Request) {
 	const media = await fetch(url, {
 		headers: getProxySafeMediaHeaders(req),
 	});
+
+	if (!media.ok) {
+		return new Response(media.body, {
+			headers: { ...CORS_HEADERS },
+			status: media.status,
+		});
+	}
+
 	// This will include the cache control headers
 	const mediaHeaders = Object.fromEntries(media.headers.entries());
 	const responseHeaders = new Headers({ ...mediaHeaders, ...CORS_HEADERS });
