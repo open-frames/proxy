@@ -68,8 +68,8 @@ describe('media', () => {
 				headers['content-type'] = contentType;
 			}
 			const filePath = `fixtures/${path}`;
-			const file = await readFile(filePath);
 			try {
+				const file = await readFile(filePath);
 				res.writeHead(200, headers);
 				res.end(file);
 			} catch (e) {
