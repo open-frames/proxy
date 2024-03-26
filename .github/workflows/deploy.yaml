@@ -24,7 +24,7 @@ jobs:
           corepack enable
           corepack prepare
       - name: Install dependencies
-        run: yarn
+        run: yarn && yarn build
       - name: Deploy
         uses: cloudflare/wrangler-action@v3
         with:
