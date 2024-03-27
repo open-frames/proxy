@@ -1,9 +1,9 @@
 import type { GetMetadataResponse, PostRedirectResponse } from '@open-frames/proxy-types';
 
-import { CORS_HEADERS } from './constants.js';
+import { CORS_HEADERS, TAG_PREFIXES } from './constants.js';
 import { ErrorResponse } from './errors.js';
 import { extractMetaTags, getFrameInfo } from './parser.js';
-import { getMimeType, getProxySafeMediaHeaders, getUrl, metaTagsToObject } from './utils.js';
+import { getMaxMetaTagSize, getMimeType, getProxySafeMediaHeaders, getUrl, metaTagsToObject } from './utils.js';
 
 export async function handleGet(req: Request) {
 	const url = getUrl(req);
@@ -11,7 +11,8 @@ export async function handleGet(req: Request) {
 	if (!url) {
 		return new Response('Missing url query param', { status: 400 });
 	}
-	const { data, headersToForward } = await downloadAndExtract(url);
+	const maxMetaTagSize = getMaxMetaTagSize(req);
+	const { data, headersToForward } = await downloadAndExtract(url, maxMetaTagSize);
 	const res: GetMetadataResponse = {
 		url,
 		extractedTags: metaTagsToObject(data),
@@ -34,7 +35,8 @@ export async function handlePost(req: Request) {
 	if (!url) {
 		return new Response('Missing url query param', { status: 400, headers: CORS_HEADERS });
 	}
-	const data = await postAndExtract(url, body);
+	const maxMetaTagSize = getMaxMetaTagSize(req);
+	const data = await postAndExtract(url, body, maxMetaTagSize);
 
 	const res: GetMetadataResponse = {
 		url,
@@ -95,7 +97,7 @@ export async function handleMedia(req: Request) {
 	});
 }
 
-export async function postAndExtract(url: string, body: unknown) {
+export async function postAndExtract(url: string, body: unknown, maxMetaTagSize: number | undefined) {
 	const signal = AbortSignal.timeout(10000);
 	const response = await fetch(url, {
 		method: 'POST',
@@ -112,10 +114,10 @@ export async function postAndExtract(url: string, body: unknown) {
 	}
 
 	const text = await response.text();
-	return extractMetaTags(text);
+	return extractMetaTags(text, TAG_PREFIXES, maxMetaTagSize);
 }
 
-export async function downloadAndExtract(url: string) {
+export async function downloadAndExtract(url: string, maxMetaTagSize?: number | undefined) {
 	const signal = AbortSignal.timeout(10000);
 	const response = await fetch(url, { redirect: 'follow', signal });
 	//   TODO: Better error handling
@@ -127,7 +129,7 @@ export async function downloadAndExtract(url: string) {
 	// TODO: Stream response until you see </head> and then stop
 	const text = await response.text();
 
-	return { data: extractMetaTags(text), headersToForward };
+	return { data: extractMetaTags(text, TAG_PREFIXES, maxMetaTagSize), headersToForward };
 }
 
 export async function findRedirect(url: string, body: unknown): Promise<PostRedirectResponse> {

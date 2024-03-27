@@ -30,6 +30,7 @@ async function serveHtml(port: number) {
 const testCases = [
 	{
 		file: 'github.html',
+		maxMetaTagSize: undefined,
 		expectedTags: {
 			'og:title': 'oven-sh/bun: Incredibly fast JavaScript runtime, bundler, test runner, and package manager – all in one',
 			'og:image': 'https://opengraph.githubassets.com/14c49397fbfdc07e07d589d265396ddb65eda364617f14d1976937a842bb0983/oven-sh/bun',
@@ -39,6 +40,7 @@ const testCases = [
 	},
 	{
 		file: 'ogp.html',
+		maxMetaTagSize: undefined,
 		expectedTags: {
 			'og:title': 'Open Graph protocol',
 			'og:image': 'https://ogp.me/logo.png',
@@ -49,6 +51,7 @@ const testCases = [
 	},
 	{
 		file: 'minimal-frame.html',
+		maxMetaTagSize: undefined,
 		expectedTags: {
 			'fc:frame': EXPECTED_FRAME_FARCASTER_VERSION,
 			'fc:frame:image': EXPECTED_FRAME_IMAGE,
@@ -66,6 +69,7 @@ const testCases = [
 	},
 	{
 		file: 'minimal-open-frame.html',
+		maxMetaTagSize: undefined,
 		expectedTags: {
 			'of:accepts:xmtp': '1',
 			'of:image': EXPECTED_FRAME_IMAGE,
@@ -84,6 +88,7 @@ const testCases = [
 	},
 	{
 		file: 'mixed-frame.html',
+		maxMetaTagSize: undefined,
 		expectedTags: {
 			'fc:frame': EXPECTED_FRAME_FARCASTER_VERSION,
 			'fc:frame:image': `fc-${EXPECTED_FRAME_IMAGE}`,
@@ -106,6 +111,7 @@ const testCases = [
 	},
 	{
 		file: 'frame-with-all-fields.html',
+		maxMetaTagSize: undefined,
 		expectedTags: {
 			'of:version': EXPECTED_FRAME_VERSION,
 			'of:accepts:xmtp': EXPECTED_FRAME_XMTP_VERSION,
@@ -164,6 +170,16 @@ const testCases = [
 			},
 		},
 	},
+	{
+		file: 'frame-with-big-tag.html',
+		maxMetaTagSize: 1024,
+		expectedTags: {
+			// no image tag because image is 2kb
+			'fc:frame': EXPECTED_FRAME_FARCASTER_VERSION,
+			'fc:frame:post_url': EXPECTED_FRAME_POST_URL,
+		},
+		// since image tag is not valid, no frame info
+	},
 ] as const;
 
 describe('metadata parsing', () => {
@@ -180,7 +196,7 @@ describe('metadata parsing', () => {
 
 	for (const testCase of testCases) {
 		test(`can extract tags from ${testCase.file}`, async () => {
-			const { data: metaTags } = await downloadAndExtract(`http://localhost:${PORT}/${testCase.file}`);
+			const { data: metaTags } = await downloadAndExtract(`http://localhost:${PORT}/${testCase.file}`, testCase.maxMetaTagSize);
 
 			const extractedTags = metaTagsToObject(metaTags);
 			for (const [key, value] of Object.entries(testCase.expectedTags)) {

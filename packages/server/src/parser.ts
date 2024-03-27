@@ -3,10 +3,11 @@ import { load } from 'cheerio';
 
 import { ALLOWED_ACTIONS, FRAMES_PREFIXES, TAG_PREFIXES } from './constants.js';
 import type { DeepPartial } from './types.js';
+import { getStrByteSize } from './utils.js';
 
 type MetaTag = [string, string];
 
-export function extractMetaTags(html: string, tagPrefixes = TAG_PREFIXES) {
+export function extractMetaTags(html: string, tagPrefixes = TAG_PREFIXES, maxMetaTagSize: number | undefined) {
 	const $ = load(html);
 	const metaTags = $('meta');
 	const metaTagsArray = Array.from(metaTags);
@@ -23,6 +24,10 @@ export function extractMetaTags(html: string, tagPrefixes = TAG_PREFIXES) {
 		const hasPrefix = tagPrefixes.some((prefix) => property.startsWith(prefix));
 
 		if (!hasPrefix) {
+			return acc;
+		}
+
+		if (maxMetaTagSize && getStrByteSize(content) > maxMetaTagSize) {
 			return acc;
 		}
 
