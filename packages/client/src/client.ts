@@ -5,17 +5,19 @@ import { JSONSerializable } from './types.js';
 
 export class OpenFramesProxy {
 	baseUrl: string;
+	maxMetaTagSize: number | undefined;
 
-	constructor(baseUrl: string) {
+	constructor(baseUrl: string, maxMetaTagSize?: number | undefined) {
 		this.baseUrl = baseUrl;
+		this.maxMetaTagSize = maxMetaTagSize;
 	}
 
 	async readMetadata(url: string): Promise<GetMetadataResponse> {
-		return readMetadata(url, this.baseUrl);
+		return readMetadata(url, this.baseUrl, this.maxMetaTagSize);
 	}
 
 	async post(url: string, payload: JSONSerializable): Promise<GetMetadataResponse> {
-		return post(url, payload, this.baseUrl);
+		return post(url, payload, this.baseUrl, this.maxMetaTagSize);
 	}
 
 	async postRedirect(url: string, payload: JSONSerializable): Promise<PostRedirectResponse> {
