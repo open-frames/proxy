@@ -3,8 +3,10 @@ import type { GetMetadataResponse, PostRedirectResponse } from '@open-frames/pro
 import { ApiError } from './errors.js';
 import { JSONSerializable } from './types.js';
 
-export async function readMetadata(url: string, proxyUrl: string): Promise<GetMetadataResponse> {
-	const response = await fetch(`${proxyUrl}?url=${encodeURIComponent(url)}`);
+export async function readMetadata(url: string, proxyUrl: string, maxMetaTagSize?: number | undefined): Promise<GetMetadataResponse> {
+	const response = await fetch(
+		`${proxyUrl}?url=${encodeURIComponent(url)}${maxMetaTagSize ? `&max-meta-tag-bytes=${maxMetaTagSize}` : ''}`,
+	);
 
 	if (!response.ok) {
 		throw new ApiError(`Failed to read metadata for ${url}`, response.status);
@@ -13,14 +15,22 @@ export async function readMetadata(url: string, proxyUrl: string): Promise<GetMe
 	return (await response.json()) as GetMetadataResponse;
 }
 
-export async function post(url: string, payload: JSONSerializable, proxyUrl: string): Promise<GetMetadataResponse> {
-	const response = await fetch(`${proxyUrl}?url=${encodeURIComponent(url)}`, {
-		method: 'POST',
-		body: JSON.stringify(payload),
-		headers: {
-			'Content-Type': 'application/json',
+export async function post(
+	url: string,
+	payload: JSONSerializable,
+	proxyUrl: string,
+	maxMetaTagSize?: number | undefined,
+): Promise<GetMetadataResponse> {
+	const response = await fetch(
+		`${proxyUrl}?url=${encodeURIComponent(url)}${maxMetaTagSize ? `&max-meta-tag-bytes=${maxMetaTagSize}` : ''}`,
+		{
+			method: 'POST',
+			body: JSON.stringify(payload),
+			headers: {
+				'Content-Type': 'application/json',
+			},
 		},
-	});
+	);
 
 	if (!response.ok) {
 		throw new Error(`Failed to post to frame: ${response.status} ${response.statusText}`);
