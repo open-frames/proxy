@@ -1,5 +1,11 @@
 # @open-frames/proxy
 
+## 0.1.2
+
+### Patch Changes
+
+- accf440: Adding the max meta tag size parameter
+
 ## 0.1.1
 
 ### Patch Changes
