@@ -4,7 +4,7 @@ import { createServer, Server } from 'node:http';
 import { afterAll, beforeAll, describe, expect, test } from 'vitest';
 
 import { downloadAndExtract } from './handlers.js';
-import { getFrameInfo } from './parser.js';
+import { getFrameInfo, parseAndValidateTransactionResponse } from './parser.js';
 import { metaTagsToObject } from './utils.js';
 
 const EXPECTED_FRAME_IMAGE = 'test-image';
@@ -15,6 +15,7 @@ const EXPECTED_FRAME_VERSION = 'of-version';
 const EXPECTED_IMAGE_ASPECT_RATIO = '1:1';
 const EXPECTED_IMAGE_ALT = 'image-alt';
 const EXPECTED_FRAME_STATE = 'state';
+const EXPECTED_FRAME_TX_POST_URL = 'tx-post-url';
 
 async function serveHtml(port: number) {
 	const server = createServer(async (req, res) => {
@@ -171,6 +172,45 @@ const testCases = [
 		},
 	},
 	{
+		file: 'frame-with-transaction.html',
+		maxMetaTagSize: undefined,
+		expectedTags: {
+			'of:version': EXPECTED_FRAME_VERSION,
+			'of:accepts:xmtp': EXPECTED_FRAME_XMTP_VERSION,
+			'of:accepts:lens': '2',
+			'of:post_url': EXPECTED_FRAME_POST_URL,
+			'of:image': EXPECTED_FRAME_IMAGE,
+			'of:image:aspect_ratio': EXPECTED_IMAGE_ASPECT_RATIO,
+			'of:image:alt': EXPECTED_IMAGE_ALT,
+			'of:button:1': 'button-1',
+			'of:button:1:action': 'tx',
+			'of:button:1:target': EXPECTED_FRAME_POST_URL,
+			'of:button:1:post_url': EXPECTED_FRAME_TX_POST_URL,
+		},
+		frameInfo: {
+			ogImage: EXPECTED_FRAME_IMAGE,
+			acceptedClients: {
+				xmtp: EXPECTED_FRAME_XMTP_VERSION,
+				lens: '2',
+			},
+			image: {
+				content: EXPECTED_FRAME_IMAGE,
+				aspectRatio: EXPECTED_IMAGE_ASPECT_RATIO,
+				alt: EXPECTED_IMAGE_ALT,
+			},
+			postUrl: EXPECTED_FRAME_POST_URL,
+			state: EXPECTED_FRAME_STATE,
+			buttons: {
+				'1': {
+					action: 'tx',
+					label: 'button-1',
+					target: EXPECTED_FRAME_POST_URL,
+					post_url: EXPECTED_FRAME_TX_POST_URL,
+				},
+			},
+		},
+	},
+	{
 		file: 'frame-with-big-tag.html',
 		maxMetaTagSize: 1024,
 		expectedTags: {
@@ -209,4 +249,42 @@ describe('metadata parsing', () => {
 			}
 		});
 	}
+});
+
+describe('parseAndValidateTransactionResponse', () => {
+	test('should return a valid object when input is correct', () => {
+		const validInput = {
+			chainId: 'eip155:1',
+			method: 'eth_sendTransaction',
+			params: {
+				abi: [],
+				to: '0x0000000000000000000000000000000000000001',
+				value: '1000',
+				data: '0x00',
+			},
+		};
+		expect(parseAndValidateTransactionResponse(validInput)).toEqual(validInput);
+	});
+
+	test('should return null for invalid method', () => {
+		const invalidMethod = {
+			chainId: 'eip155:1',
+			method: 'invalidMethod',
+		};
+		expect(parseAndValidateTransactionResponse(invalidMethod)).toBeNull();
+	});
+
+	test('should return null for invalid chain ID', () => {
+		const invalidChainId = {
+			chainId: 'invalid:999',
+			method: 'eth_sendTransaction',
+			params: {
+				abi: [],
+				to: '0x0000000000000000000000000000000000000001',
+				value: '1000',
+				data: '0x00',
+			},
+		};
+		expect(parseAndValidateTransactionResponse(invalidChainId)).toBeNull();
+	});
 });

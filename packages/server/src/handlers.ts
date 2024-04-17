@@ -2,7 +2,7 @@ import type { GetMetadataResponse, PostRedirectResponse } from '@open-frames/pro
 
 import { CORS_HEADERS, TAG_PREFIXES } from './constants.js';
 import { ErrorResponse } from './errors.js';
-import { extractMetaTags, getFrameInfo } from './parser.js';
+import { extractMetaTags, getFrameInfo, parseAndValidateTransactionResponse } from './parser.js';
 import { getMaxMetaTagSize, getMimeType, getProxySafeMediaHeaders, getUrl, metaTagsToObject } from './utils.js';
 
 export async function handleGet(req: Request) {
@@ -97,8 +97,17 @@ export async function handleMedia(req: Request) {
 	});
 }
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function shouldValidateTransactionResponse(body: any): body is {
+	address: string;
+	validateTransactionResponse?: boolean;
+} {
+	return body && typeof body.validateTransactionResponse === 'boolean';
+}
+
 export async function postAndExtract(url: string, body: unknown, maxMetaTagSize: number | undefined) {
 	const signal = AbortSignal.timeout(10000);
+	const validateTransactionResponse = shouldValidateTransactionResponse(body);
 	const response = await fetch(url, {
 		method: 'POST',
 		redirect: 'follow',
@@ -113,6 +122,12 @@ export async function postAndExtract(url: string, body: unknown, maxMetaTagSize:
 		throw new Error(`Request failed with status ${response.status}`);
 	}
 
+	if (validateTransactionResponse) {
+		const validatedTransactionResponse = parseAndValidateTransactionResponse(response);
+		if (!validatedTransactionResponse) {
+			throw new Error(`Invalid transaction response from ${url}`);
+		}
+	}
 	const text = await response.text();
 	return extractMetaTags(text, TAG_PREFIXES, maxMetaTagSize);
 }

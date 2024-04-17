@@ -1,0 +1,10 @@
+{
+	"chainId": "eip155:1",
+	"method": "eth_sendTransaction",
+	"params": {
+		"abi": [],
+		"to": "0x0000000000000000000000000000000000000001",
+		"data": "0x00",
+		"value": "123456789"
+	}
+}

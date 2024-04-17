@@ -1,4 +1,4 @@
-import type { OpenFrameButton, OpenFrameImage, OpenFrameResult } from '@open-frames/proxy-types';
+import type { OpenFrameButton, OpenFrameImage, OpenFrameResult, TransactionResponse } from '@open-frames/proxy-types';
 import { load } from 'cheerio';
 
 import { ALLOWED_ACTIONS, FRAMES_PREFIXES, TAG_PREFIXES } from './constants.js';
@@ -135,4 +135,50 @@ function removeFramesPrefix(str: string, prefix: string) {
 		return newString.slice(1);
 	}
 	return newString;
+}
+
+// To-do: validate the accuracy of these
+const evmChainIds: Set<number> = new Set([
+	1, // Ethereum Mainnet
+	3, // Ropsten Testnet
+	4, // Rinkeby Testnet
+	5, // Goerli Testnet
+	42, // Kovan Testnet
+	56, // Binance Smart Chain
+	137, // Polygon Network
+	43114, // Avalanche C-Chain
+]);
+
+function isEvmChainId(chainId: string): boolean {
+	const prefixPattern = /^eip155:/;
+	if (!prefixPattern.test(chainId)) {
+		return false;
+	}
+
+	const numericPart = chainId.split(':')[1];
+	return evmChainIds.has(Number(numericPart));
+}
+
+export function parseAndValidateTransactionResponse(response: TransactionResponse): TransactionResponse | null {
+	try {
+		if (response.method !== 'eth_sendTransaction' || !isEvmChainId(response.chainId)) {
+			console.error('Invalid method or chain ID.');
+			return null;
+		}
+
+		const { abi, to, value, data } = response.params;
+		if (
+			!Array.isArray(abi) ||
+			!to ||
+			typeof to !== 'string' ||
+			(value && typeof value !== 'string') ||
+			(data && typeof data !== 'string')
+		) {
+			return null;
+		}
+
+		return response;
+	} catch (error) {
+		return null;
+	}
 }

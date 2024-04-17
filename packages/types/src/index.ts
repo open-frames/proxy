@@ -19,6 +19,12 @@ export type OpenFrameButton =
 			action: 'post' | 'post_redirect';
 			target?: string;
 			label: string;
+	  }
+	| {
+			action: 'tx';
+			target: string;
+			label: string;
+			post_url: string;
 	  };
 
 export type TextInput = {
@@ -41,4 +47,15 @@ export type GetMetadataResponse = {
 	url: string;
 	extractedTags: { [k: string]: string };
 	frameInfo?: OpenFrameResult;
+};
+
+export type TransactionResponse = {
+	chainId: string;
+	method: 'eth_sendTransaction';
+	params: {
+		abi: Array<unknown>;
+		to: string;
+		data?: string;
+		value?: string;
+	};
 };
