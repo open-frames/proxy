@@ -35,7 +35,7 @@ const initialFrame = await readMetadata(FRAME_URL);
 // Extract from above
 const action = initialFrame.buttons['1'].action;
 const target = initialFrame.buttons['1'].target;
-const postUrl = initialFrame.buttons['1'].postUrl;
+const postUrl = initialFrame.buttons['1'].post_url;
 
 // If this is a transaction frame, do the below steps
 const isTransaction = action === 'tx' && target && postUrl;
