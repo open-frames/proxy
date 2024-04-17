@@ -137,47 +137,36 @@ function removeFramesPrefix(str: string, prefix: string) {
 	return newString;
 }
 
-// To-do: validate the accuracy of these
-const evmChainIds: Set<number> = new Set([
-	1, // Ethereum Mainnet
-	3, // Ropsten Testnet
-	4, // Rinkeby Testnet
-	5, // Goerli Testnet
-	42, // Kovan Testnet
-	56, // Binance Smart Chain
-	137, // Polygon Network
-	43114, // Avalanche C-Chain
-]);
-
 function isEvmChainId(chainId: string): boolean {
 	const prefixPattern = /^eip155:/;
 	if (!prefixPattern.test(chainId)) {
 		return false;
 	}
-
-	const numericPart = chainId.split(':')[1];
-	return evmChainIds.has(Number(numericPart));
+	const chainNumber = chainId.split(':')[1];
+	return !!Number(chainNumber);
 }
 
 export function parseAndValidateTransactionResponse(response: TransactionResponse): TransactionResponse | null {
 	try {
-		if (response.method !== 'eth_sendTransaction' || !isEvmChainId(response.chainId)) {
-			console.error('Invalid method or chain ID.');
-			return null;
+		if (response.method === 'eth_sendTransaction') {
+			if (!isEvmChainId(response.chainId)) {
+				return null;
+			}
+			const { abi, to, value, data } = response.params;
+			if (
+				!Array.isArray(abi) ||
+				!to ||
+				typeof to !== 'string' ||
+				(value && typeof value !== 'string') ||
+				(data && typeof data !== 'string')
+			) {
+				return null;
+			} else {
+				return response;
+			}
+		} else {
+			return response;
 		}
-
-		const { abi, to, value, data } = response.params;
-		if (
-			!Array.isArray(abi) ||
-			!to ||
-			typeof to !== 'string' ||
-			(value && typeof value !== 'string') ||
-			(data && typeof data !== 'string')
-		) {
-			return null;
-		}
-
-		return response;
 	} catch (error) {
 		return null;
 	}

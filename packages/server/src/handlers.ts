@@ -1,4 +1,4 @@
-import type { GetMetadataResponse, PostRedirectResponse } from '@open-frames/proxy-types';
+import type { GetMetadataResponse, PostRedirectResponse, TransactionResponse } from '@open-frames/proxy-types';
 
 import { CORS_HEADERS, TAG_PREFIXES } from './constants.js';
 import { ErrorResponse } from './errors.js';
@@ -43,6 +43,23 @@ export async function handlePost(req: Request) {
 		extractedTags: metaTagsToObject(data),
 		frameInfo: getFrameInfo(data),
 	};
+
+	return Response.json(res, {
+		headers: {
+			'content-type': 'application/json',
+			...CORS_HEADERS,
+		},
+	});
+}
+
+export async function handlePostTransaction(req: Request) {
+	const url = getUrl(req);
+	const body = await req.json();
+	console.log(`Processing POST transaction request for ${url}`);
+	if (!url) {
+		return new Response('Missing url query param', { status: 400, headers: CORS_HEADERS });
+	}
+	const res: TransactionResponse = await postTransaction(url, body);
 
 	return Response.json(res, {
 		headers: {
@@ -97,17 +114,8 @@ export async function handleMedia(req: Request) {
 	});
 }
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-function shouldValidateTransactionResponse(body: any): body is {
-	address: string;
-	validateTransactionResponse?: boolean;
-} {
-	return body && typeof body.validateTransactionResponse === 'boolean';
-}
-
 export async function postAndExtract(url: string, body: unknown, maxMetaTagSize: number | undefined) {
 	const signal = AbortSignal.timeout(10000);
-	const validateTransactionResponse = shouldValidateTransactionResponse(body);
 	const response = await fetch(url, {
 		method: 'POST',
 		redirect: 'follow',
@@ -122,14 +130,32 @@ export async function postAndExtract(url: string, body: unknown, maxMetaTagSize:
 		throw new Error(`Request failed with status ${response.status}`);
 	}
 
-	if (validateTransactionResponse) {
-		const validatedTransactionResponse = parseAndValidateTransactionResponse(response);
-		if (!validatedTransactionResponse) {
-			throw new Error(`Invalid transaction response from ${url}`);
-		}
-	}
 	const text = await response.text();
 	return extractMetaTags(text, TAG_PREFIXES, maxMetaTagSize);
+}
+
+export async function postTransaction(url: string, body: unknown) {
+	const signal = AbortSignal.timeout(10000);
+	const response = await fetch(url, {
+		method: 'POST',
+		redirect: 'follow',
+		body: JSON.stringify(body),
+		headers: {
+			'content-type': 'application/json',
+		},
+		signal,
+	});
+
+	if (response.status >= 400) {
+		throw new Error(`Request failed with status ${response.status}`);
+	}
+
+	const validatedTransactionResponse = parseAndValidateTransactionResponse(response);
+	if (!validatedTransactionResponse) {
+		throw new Error(`Invalid transaction response from ${url}`);
+	} else {
+		return validatedTransactionResponse;
+	}
 }
 
 export async function downloadAndExtract(url: string, maxMetaTagSize?: number | undefined) {

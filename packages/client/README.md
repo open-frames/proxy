@@ -26,7 +26,7 @@ const initialFrame = await readMetadata(FRAME_URL, PROXY_URL);
 ### Transaction frame usage
 
 ```ts
-import { readMetadata, post } from '@open-frames/proxy-client';
+import { readMetadata, post, postTransaction } from '@open-frames/proxy-client';
 
 const FRAME_URL = 'https://frames.xmtp.chat/';
 
@@ -40,7 +40,7 @@ const postUrl = initialFrame.buttons['1'].post_url;
 // If this is a transaction frame, do the below steps
 const isTransaction = action === 'tx' && target && postUrl;
 
-// First, make a POST request to the `target` URL to fetch data about the transaction, with a signed frame action payload in the POST body including the address of the connected wallet in the `address` field and a flag in the `validateTransactionResponse` field to indicate it's a transaction frame that needs validation of the response.
+// First, make a POST request to the `target` URL to fetch data about the transaction, with a signed frame action payload in the POST body including the address of the connected wallet in the `address` field.
 const fetchTransactionData: {
 	chainId: string;
 	method: 'eth_sendTransaction';
@@ -50,7 +50,7 @@ const fetchTransactionData: {
 		value?: string;
 		data?: `0x${string}`;
 	};
-} = await post(initialFrame.target, { address: `0x${string}`, validateTransactionResponse: true });
+} = await postTransaction(initialFrame.target, { address: `0x${string}` });
 
 // The response from the server is a 200 with JSON describing the transaction.
 

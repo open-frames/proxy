@@ -252,7 +252,7 @@ describe('metadata parsing', () => {
 });
 
 describe('parseAndValidateTransactionResponse', () => {
-	test('should return a valid object when input is correct', () => {
+	test('should return input object when input method is eth_sendTransaction with expected fields', () => {
 		const validInput = {
 			chainId: 'eip155:1',
 			method: 'eth_sendTransaction',
@@ -266,15 +266,31 @@ describe('parseAndValidateTransactionResponse', () => {
 		expect(parseAndValidateTransactionResponse(validInput)).toEqual(validInput);
 	});
 
-	test('should return null for invalid method', () => {
-		const invalidMethod = {
+	test('should return input object when input method is not eth_sendTransaction', () => {
+		const validInput = {
 			chainId: 'eip155:1',
-			method: 'invalidMethod',
+			method: 'eth_personalSign',
+			params: {
+				abi: [],
+				to: '0x0000000000000000000000000000000000000001',
+				value: '1000',
+				data: '0x00',
+			},
 		};
-		expect(parseAndValidateTransactionResponse(invalidMethod)).toBeNull();
+		expect(parseAndValidateTransactionResponse(validInput)).toEqual(validInput);
 	});
 
-	test('should return null for invalid chain ID', () => {
+	test('should return null when input method is eth_sendTransaction with invalid parameters', () => {
+		const invalidChainId = {
+			chainId: 'eip155:1',
+			method: 'eth_sendTransaction',
+			params: {
+				abi: 'invalid abi',
+			},
+		};
+		expect(parseAndValidateTransactionResponse(invalidChainId)).toBeNull();
+	});
+	test('should return null when input method is eth_sendTransaction with invalid chainId', () => {
 		const invalidChainId = {
 			chainId: 'invalid:999',
 			method: 'eth_sendTransaction',
