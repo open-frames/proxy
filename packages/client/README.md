@@ -58,7 +58,7 @@ const fetchTransactionData: {
 
 // After a prompt, the client should then send a POST request to the postURL (target) with the transaction hash in the transactionId field. Importantly, this postUrl should come from the button and *not* the root postUrl.
 
-const postTransaction = await post(postUrl, { transactionId: 'transactionHash from above response' });
+await post(postUrl, { transactionId: 'transactionHash from above response' });
 // The response from the frame server would be a 200 OK and include another frame.
 
 const proxiedOgImage = mediaUrl(initialFrame.frameInfo.ogImage, PROXY_URL);
