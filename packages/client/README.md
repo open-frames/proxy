@@ -67,7 +67,7 @@ const fetchTransactionData: {
 		value?: string;
 		data?: `0x${string}`;
 	};
-} = await postTransaction(initialFrame.target, { address: `0x${string}` });
+} = await postTransaction(target, { address: `0x${string}` });
 
 // The response from the server is a 200 with JSON describing the transaction.
 
