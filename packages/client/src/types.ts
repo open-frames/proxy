@@ -1,4 +1,11 @@
-export type { GetMetadataResponse, OpenFrameButton, OpenFrameImage, OpenFrameResult, PostRedirectResponse } from '@open-frames/proxy-types';
+export type {
+	GetMetadataResponse,
+	OpenFrameButton,
+	OpenFrameImage,
+	OpenFrameResult,
+	PostRedirectResponse,
+	TransactionResponse,
+} from '@open-frames/proxy-types';
 
 type JSONPrimitive = string | number | boolean | null;
 // eslint-disable-next-line no-use-before-define

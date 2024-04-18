@@ -95,6 +95,7 @@ returns
 - `POST /?url=$URL` POST a JSON body to the URL and return the Frame metadata from the response
 - `POST /redirect?url=$URL` POST a JSON body to the URL and return the location that the server redirected you to
 - `GET /media?url=$URL` Proxy a request for media (image, video, etc) to the server. Returns the full response payload
+- `POST /transaction?url=$URL` Post a JSON body to the URL and return a validated transaction data response
 
 For more detailed examples, check out the [client](./packages/client)
 

@@ -1,4 +1,4 @@
-import type { OpenFrameButton, OpenFrameImage, OpenFrameResult } from '@open-frames/proxy-types';
+import type { OpenFrameButton, OpenFrameImage, OpenFrameResult, TransactionResponse } from '@open-frames/proxy-types';
 import { load } from 'cheerio';
 
 import { ALLOWED_ACTIONS, FRAMES_PREFIXES, TAG_PREFIXES } from './constants.js';
@@ -135,4 +135,39 @@ function removeFramesPrefix(str: string, prefix: string) {
 		return newString.slice(1);
 	}
 	return newString;
+}
+
+function isEvmChainId(chainId: string): boolean {
+	const prefixPattern = /^eip155:/;
+	if (!prefixPattern.test(chainId)) {
+		return false;
+	}
+	const chainNumber = chainId.split(':')[1];
+	return !!Number(chainNumber);
+}
+
+export function parseAndValidateTransactionResponse(response: TransactionResponse): TransactionResponse | null {
+	try {
+		if (response.method === 'eth_sendTransaction') {
+			if (!isEvmChainId(response.chainId)) {
+				return null;
+			}
+			const { abi, to, value, data } = response.params;
+			if (
+				!Array.isArray(abi) ||
+				!to ||
+				typeof to !== 'string' ||
+				(value && typeof value !== 'string') ||
+				(data && typeof data !== 'string')
+			) {
+				return null;
+			} else {
+				return response;
+			}
+		} else {
+			return response;
+		}
+	} catch (error) {
+		return null;
+	}
 }

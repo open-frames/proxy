@@ -1,6 +1,6 @@
 import { CORS_HEADERS } from './constants.js';
 import { ErrorResponse } from './errors.js';
-import { handleGet, handleMedia, handlePost, handleRedirect } from './handlers.js';
+import { handleGet, handleMedia, handlePost, handlePostTransaction, handleRedirect } from './handlers.js';
 import { getRequestPath } from './utils.js';
 
 export async function handleRequest(req: Request): Promise<Response> {
@@ -23,6 +23,10 @@ export async function handleRequest(req: Request): Promise<Response> {
 		if (req.method === 'POST') {
 			if (path === '/redirect') {
 				return await handleRedirect(req);
+			}
+
+			if (path === 'transaction') {
+				return await handlePostTransaction(req);
 			}
 
 			return await handlePost(req);

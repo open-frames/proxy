@@ -1,7 +1,7 @@
 import type { GetMetadataResponse, PostRedirectResponse } from '@open-frames/proxy-types';
 
 import { ApiError } from './errors.js';
-import { JSONSerializable } from './types.js';
+import { JSONSerializable, TransactionResponse } from './types.js';
 
 export async function readMetadata(url: string, proxyUrl: string, maxMetaTagSize?: number | undefined): Promise<GetMetadataResponse> {
 	const response = await fetch(
@@ -37,6 +37,30 @@ export async function post(
 	}
 
 	return (await response.json()) as GetMetadataResponse;
+}
+
+export async function postTransaction(
+	url: string,
+	payload: JSONSerializable,
+	proxyUrl: string,
+	maxMetaTagSize?: number | undefined,
+): Promise<TransactionResponse> {
+	const response = await fetch(
+		`${proxyUrl}transaction?url=${encodeURIComponent(url)}${maxMetaTagSize ? `&max-meta-tag-bytes=${maxMetaTagSize}` : ''}`,
+		{
+			method: 'POST',
+			body: JSON.stringify(payload),
+			headers: {
+				'Content-Type': 'application/json',
+			},
+		},
+	);
+
+	if (!response.ok) {
+		throw new Error(`Failed to post to frame: ${response.status} ${response.statusText}`);
+	}
+
+	return (await response.json()) as TransactionResponse;
 }
 
 export async function postRedirect(url: string, payload: JSONSerializable, proxyUrl: string): Promise<PostRedirectResponse> {

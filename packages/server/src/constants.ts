@@ -4,7 +4,7 @@ export const FRAMES_PREFIXES = ['of:', 'fc:frame', 'hey:portal'] as const;
 // OpenGraph tag prefixes + frames prefixes
 export const TAG_PREFIXES = ['og:', ...FRAMES_PREFIXES] as const;
 // Possible values for the action field in a button
-export const ALLOWED_ACTIONS = ['post', 'post_redirect', 'link', 'mint'] as const;
+export const ALLOWED_ACTIONS = ['post', 'post_redirect', 'link', 'mint', 'tx'] as const;
 
 // CORS headers to be attached to all requests.
 // Leaving things wide open for now

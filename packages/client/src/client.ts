@@ -1,7 +1,7 @@
 import type { GetMetadataResponse, PostRedirectResponse } from '@open-frames/proxy-types';
 
-import { mediaUrl, post, postRedirect, readMetadata } from './actions.js';
-import { JSONSerializable } from './types.js';
+import { mediaUrl, post, postRedirect, postTransaction, readMetadata } from './actions.js';
+import { JSONSerializable, TransactionResponse } from './types.js';
 
 export class OpenFramesProxy {
 	baseUrl: string;
@@ -22,6 +22,10 @@ export class OpenFramesProxy {
 
 	async postRedirect(url: string, payload: JSONSerializable): Promise<PostRedirectResponse> {
 		return postRedirect(url, payload, this.baseUrl);
+	}
+
+	async postTransaction(url: string, payload: JSONSerializable): Promise<TransactionResponse> {
+		return postTransaction(url, payload, this.baseUrl, this.maxMetaTagSize);
 	}
 
 	mediaUrl(url: string): string {
