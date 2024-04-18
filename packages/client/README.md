@@ -20,7 +20,7 @@ const FRAME_URL = 'https://myframe.xyz';
 
 // Get the frame metadata, which will include the parsed `frameInfo` object
 const initialFrame = await readMetadata(FRAME_URL, PROXY_URL);
-// Get a URL for the Open Graph image that will be runt hrough the proxy
+// Get a URL for the Open Graph image that will be run through the proxy
 ```
 
 ### Transaction frame usage
@@ -54,9 +54,9 @@ const fetchTransactionData: {
 
 // The response from the server is a 200 with JSON describing the transaction.
 
-// The client then sends a tx request to the user's connected wallet -- this is out of scope of this package, and we can ignore it. This is dependent on the provider e.g. Infura.
+// The client then sends a tx request to the user's connected wallet. Note: this step is out of scope of this package.
 
-// After a prompt, the client should then send a POST request to the postURL (target) with the transaction hash in the transactionId field. Importantly, this postUrl should come from the button and *not* the root postUrl.
+// The client should then send a POST request to the postURL (target) with the transaction hash returned from the step above in the transactionId field. Importantly, this postUrl should come from the button and *not* the `frameInfo` postUrl.
 
 await post(postUrl, { transactionId: 'transactionHash from above response' });
 // The response from the frame server would be a 200 OK and include another frame.
