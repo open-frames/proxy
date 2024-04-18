@@ -73,10 +73,10 @@ const transactionInfo: {
 
 // The client then sends a tx request to the user's connected wallet. Note: this step is out of scope of this package.
 
-// The client should then send a POST request to the postURL (target) with the transaction hash returned from the step above in the transactionId field. Importantly, this postUrl should come from the button and *not* the `frameInfo` postUrl.
+// The client should then send a POST request to the postURL with the transaction hash returned from the step above in the transactionId field. Importantly, this postUrl should come from the button and *not* the `frameInfo` postUrl.
 
 await post(postUrl, { transactionId: 'transactionHash from above response' });
-// The response from the frame server would be a 200 OK and include another frame.
+// The response from the frame server should be a 200 OK and include another frame.
 ```
 
 You may also use the `OpenFramesProxy` class to set the proxy URL once and use the same methods

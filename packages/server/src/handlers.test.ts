@@ -122,15 +122,28 @@ describe('media', () => {
 describe('postTransaction', () => {
 	const mockValidResponse = {
 		status: 200,
-		json: () =>
-			Promise.resolve({
-				responseData: 'test123',
-			}),
-	} as Response;
+		json: () => {
+			return {
+				chainId: 'eip155:1',
+				method: 'eth_sendTransaction',
+				params: {
+					abi: [],
+					to: '0x',
+				},
+			};
+		},
+	} as unknown as Response;
 
 	const mockInvalidResponse = {
-		status: 400,
-	} as Response;
+		status: 200,
+		json: () => {
+			return {
+				chainId: 'eip155:1',
+				method: 'eth_sendTransaction',
+				params: null,
+			};
+		},
+	} as unknown as Response;
 
 	beforeAll(() => {
 		vi.spyOn(global, 'fetch').mockResolvedValueOnce(mockValidResponse);
@@ -145,8 +158,13 @@ describe('postTransaction', () => {
 	test('returns validated response on success', async () => {
 		const result = await postTransaction('https://www.example.com', {});
 
-		expect(await result.json()).toEqual({
-			responseData: 'test123',
+		expect(result).toEqual({
+			chainId: 'eip155:1',
+			method: 'eth_sendTransaction',
+			params: {
+				abi: [],
+				to: '0x',
+			},
 		});
 	});
 
