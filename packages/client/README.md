@@ -58,7 +58,7 @@ const postUrl = initialFrame.buttons['1'].post_url;
 const isTransaction = action === 'tx' && target && postUrl;
 
 // First, make a POST request to the `target` URL to fetch data about the transaction, with a signed frame action payload in the POST body including the address of the connected wallet in the `address` field.
-const fetchTransactionData: {
+const transactionInfo: {
 	chainId: string;
 	method: 'eth_sendTransaction';
 	params: {
