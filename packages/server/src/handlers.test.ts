@@ -1,10 +1,10 @@
 import { readFile } from 'node:fs/promises';
 import { createServer, OutgoingHttpHeaders, Server } from 'node:http';
 
-import { afterAll, beforeAll, describe, expect, test } from 'vitest';
+import { afterAll, beforeAll, describe, expect, test, vi } from 'vitest';
 
 import { ErrorResponse } from './errors.js';
-import { findRedirect, handleMedia } from './handlers.js';
+import { findRedirect, handleMedia, postTransaction } from './handlers.js';
 
 describe('postRedirect', () => {
 	const PORT = 7777;
@@ -116,5 +116,43 @@ describe('media', () => {
 		const response = await handleMedia(mediaRequest);
 		// Use the content type from the media server, not just the file name
 		expect(response.status).toEqual(404);
+	});
+});
+
+describe('postTransaction', () => {
+	const mockValidResponse = {
+		status: 200,
+		json: () =>
+			Promise.resolve({
+				responseData: 'test123',
+			}),
+	} as Response;
+
+	const mockInvalidResponse = {
+		status: 400,
+	} as Response;
+
+	beforeAll(() => {
+		vi.spyOn(global, 'fetch').mockResolvedValueOnce(mockValidResponse);
+
+		vi.mocked(fetch).mockResolvedValueOnce(mockValidResponse);
+	});
+
+	afterAll(() => {
+		vi.spyOn(global, 'fetch').mockClear();
+	});
+
+	test('returns validated response on success', async () => {
+		const result = await postTransaction('https://www.example.com', {});
+
+		expect(await result.json()).toEqual({
+			responseData: 'test123',
+		});
+	});
+
+	test('throws error on invalid response', async () => {
+		vi.spyOn(global, 'fetch').mockResolvedValueOnce(mockInvalidResponse);
+
+		await expect(postTransaction('https://www.example.com', {})).rejects.toThrowError();
 	});
 });

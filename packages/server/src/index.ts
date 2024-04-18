@@ -3,12 +3,6 @@ import { ErrorResponse } from './errors.js';
 import { handleGet, handleMedia, handlePost, handlePostTransaction, handleRedirect } from './handlers.js';
 import { getRequestPath } from './utils.js';
 
-// To-do: remove once figuring out the better way to distinguish which to call here
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-function hasAddressProperty(body: any): body is { address?: string } {
-	return typeof body === 'object' && 'address' in body;
-}
-
 export async function handleRequest(req: Request): Promise<Response> {
 	try {
 		if (req.method === 'OPTIONS') {
@@ -30,12 +24,12 @@ export async function handleRequest(req: Request): Promise<Response> {
 			if (path === '/redirect') {
 				return await handleRedirect(req);
 			}
-			// Is there a better way to determine whether this is a post or post transaction request?
-			if (hasAddressProperty(req.body)) {
+
+			if (path === 'transaction') {
 				return await handlePostTransaction(req);
-			} else {
-				return await handlePost(req);
 			}
+
+			return await handlePost(req);
 		}
 	} catch (e) {
 		if (e instanceof ErrorResponse) {

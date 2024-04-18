@@ -46,7 +46,7 @@ export async function postTransaction(
 	maxMetaTagSize?: number | undefined,
 ): Promise<TransactionResponse> {
 	const response = await fetch(
-		`${proxyUrl}?url=${encodeURIComponent(url)}${maxMetaTagSize ? `&max-meta-tag-bytes=${maxMetaTagSize}` : ''}`,
+		`${proxyUrl}transaction?url=${encodeURIComponent(url)}${maxMetaTagSize ? `&max-meta-tag-bytes=${maxMetaTagSize}` : ''}`,
 		{
 			method: 'POST',
 			body: JSON.stringify(payload),
