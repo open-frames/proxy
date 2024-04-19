@@ -150,7 +150,8 @@ export async function postTransaction(url: string, body: unknown) {
 		throw new Error(`Request failed with status ${response.status}`);
 	}
 
-	const validatedTransactionResponse = parseAndValidateTransactionResponse(response.json());
+	const responseData: TransactionResponse = (await response.json()) as TransactionResponse;
+	const validatedTransactionResponse = parseAndValidateTransactionResponse(responseData);
 	if (!validatedTransactionResponse) {
 		throw new Error(`Invalid transaction response from ${url}`);
 	} else {

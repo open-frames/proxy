@@ -1,6 +1,7 @@
 import { readFile } from 'node:fs/promises';
 import { createServer, Server } from 'node:http';
 
+import { TransactionResponse } from '@open-frames/proxy-types';
 import { afterAll, beforeAll, describe, expect, test } from 'vitest';
 
 import { downloadAndExtract } from './handlers.js';
@@ -262,7 +263,7 @@ describe('parseAndValidateTransactionResponse', () => {
 				value: '1000',
 				data: '0x00',
 			},
-		};
+		} as TransactionResponse;
 		expect(parseAndValidateTransactionResponse(validInput)).toEqual(validInput);
 	});
 
@@ -276,7 +277,7 @@ describe('parseAndValidateTransactionResponse', () => {
 				value: '1000',
 				data: '0x00',
 			},
-		};
+		} as unknown as TransactionResponse;
 		expect(parseAndValidateTransactionResponse(validInput)).toEqual(validInput);
 	});
 
@@ -287,7 +288,7 @@ describe('parseAndValidateTransactionResponse', () => {
 			params: {
 				abi: 'invalid abi',
 			},
-		};
+		} as unknown as TransactionResponse;
 		expect(parseAndValidateTransactionResponse(invalidChainId)).toBeNull();
 	});
 	test('should return null when input method is eth_sendTransaction with invalid chainId', () => {
@@ -300,7 +301,7 @@ describe('parseAndValidateTransactionResponse', () => {
 				value: '1000',
 				data: '0x00',
 			},
-		};
+		} as TransactionResponse;
 		expect(parseAndValidateTransactionResponse(invalidChainId)).toBeNull();
 	});
 });
