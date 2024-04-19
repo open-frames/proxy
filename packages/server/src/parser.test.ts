@@ -1,12 +1,12 @@
 import { readFile } from 'node:fs/promises';
 import { createServer, Server } from 'node:http';
 
+import { TransactionResponse } from '@open-frames/proxy-types';
 import { afterAll, beforeAll, describe, expect, test } from 'vitest';
 
 import { downloadAndExtract } from './handlers.js';
 import { getFrameInfo, parseAndValidateTransactionResponse } from './parser.js';
 import { metaTagsToObject } from './utils.js';
-import { TransactionResponse } from '@open-frames/proxy-types';
 
 const EXPECTED_FRAME_IMAGE = 'test-image';
 const EXPECTED_FRAME_POST_URL = 'post-url';
