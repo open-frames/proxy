@@ -1,5 +1,11 @@
 # @open-frames/proxy-types
 
+## 0.2.0
+
+### Minor Changes
+
+- e28ca60: add tx support
+
 ## 0.1.1
 
 ### Patch Changes
