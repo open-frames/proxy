@@ -6,6 +6,7 @@ import { afterAll, beforeAll, describe, expect, test } from 'vitest';
 import { downloadAndExtract } from './handlers.js';
 import { getFrameInfo, parseAndValidateTransactionResponse } from './parser.js';
 import { metaTagsToObject } from './utils.js';
+import { TransactionResponse } from '@open-frames/proxy-types';
 
 const EXPECTED_FRAME_IMAGE = 'test-image';
 const EXPECTED_FRAME_POST_URL = 'post-url';
@@ -262,7 +263,7 @@ describe('parseAndValidateTransactionResponse', () => {
 				value: '1000',
 				data: '0x00',
 			},
-		};
+		} as TransactionResponse;
 		expect(parseAndValidateTransactionResponse(validInput)).toEqual(validInput);
 	});
 
@@ -276,7 +277,7 @@ describe('parseAndValidateTransactionResponse', () => {
 				value: '1000',
 				data: '0x00',
 			},
-		};
+		} as unknown as TransactionResponse;
 		expect(parseAndValidateTransactionResponse(validInput)).toEqual(validInput);
 	});
 
@@ -287,7 +288,7 @@ describe('parseAndValidateTransactionResponse', () => {
 			params: {
 				abi: 'invalid abi',
 			},
-		};
+		} as unknown as TransactionResponse;
 		expect(parseAndValidateTransactionResponse(invalidChainId)).toBeNull();
 	});
 	test('should return null when input method is eth_sendTransaction with invalid chainId', () => {
@@ -300,7 +301,7 @@ describe('parseAndValidateTransactionResponse', () => {
 				value: '1000',
 				data: '0x00',
 			},
-		};
+		} as TransactionResponse;
 		expect(parseAndValidateTransactionResponse(invalidChainId)).toBeNull();
 	});
 });
