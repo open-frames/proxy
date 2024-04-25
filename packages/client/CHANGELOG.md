@@ -1,5 +1,16 @@
 # @open-frames/proxy-client
 
+## 0.3.0
+
+### Minor Changes
+
+- e28ca60: add tx support
+
+### Patch Changes
+
+- Updated dependencies [e28ca60]
+  - @open-frames/proxy-types@0.2.0
+
 ## 0.2.2
 
 ### Patch Changes
