@@ -25,7 +25,7 @@ export async function handleRequest(req: Request): Promise<Response> {
 				return await handleRedirect(req);
 			}
 
-			if (path === 'transaction') {
+			if (path === '/transaction') {
 				return await handlePostTransaction(req);
 			}
 
