@@ -5,7 +5,7 @@ export type PostRedirectResponse = {
 
 export type OpenFrameImage = {
 	content: string;
-	aspectRatio?: '1.91.1' | '1:1';
+	aspectRatio?: '1.91:1' | '1:1';
 	alt?: string;
 };
 
