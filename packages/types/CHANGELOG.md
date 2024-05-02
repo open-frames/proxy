@@ -1,5 +1,11 @@
 # @open-frames/proxy-types
 
+## 0.2.2
+
+### Patch Changes
+
+- 5bd1f1c: add button result type
+
 ## 0.2.1
 
 ### Patch Changes

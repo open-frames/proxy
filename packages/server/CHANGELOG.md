@@ -1,5 +1,13 @@
 # @open-frames/proxy
 
+## 0.2.3
+
+### Patch Changes
+
+- f9e2098: account for button post_url in frameInfo
+- Updated dependencies [5bd1f1c]
+  - @open-frames/proxy-types@0.2.2
+
 ## 0.2.2
 
 ### Patch Changes
