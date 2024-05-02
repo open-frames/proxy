@@ -1,5 +1,11 @@
 # @open-frames/proxy-types
 
+## 0.2.1
+
+### Patch Changes
+
+- b999468: Fixed return type for image ratio
+
 ## 0.2.0
 
 ### Minor Changes
