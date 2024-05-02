@@ -112,12 +112,17 @@ function updateFrameButton(frameInfo: DeepPartial<OpenFrameResult>, key: string,
 	frameInfo.buttons = frameInfo.buttons || {};
 	const button = frameInfo.buttons[buttonIndex] || {};
 	if (maybeField) {
-		const field = maybeField as keyof OpenFrameButton;
+		const field = maybeField as keyof OpenFrameButton | 'post_url';
 		if (field === 'action' && isAllowedAction(value)) {
 			button.action = value;
 		}
 		if (field === 'target') {
 			button.target = value;
+		}
+		if (button.action === 'tx') {
+			if (field === 'post_url') {
+				button.post_url = value;
+			}
 		}
 	} else {
 		button.label = value;
