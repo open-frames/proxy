@@ -14,17 +14,39 @@ export type OpenFrameButton =
 			action: 'link' | 'mint';
 			target: string;
 			label: string;
+			post_url?: string;
 	  }
 	| {
 			action: 'post' | 'post_redirect';
 			target?: string;
 			label: string;
+			post_url?: string;
 	  }
 	| {
 			action: 'tx';
 			target: string;
 			label: string;
 			post_url: string;
+	  };
+
+export type OpenFrameButtonResult =
+	| {
+			action: 'link' | 'mint';
+			target: string;
+			label: string;
+			postUrl?: string;
+	  }
+	| {
+			action: 'post' | 'post_redirect';
+			target?: string;
+			label: string;
+			postUrl?: string;
+	  }
+	| {
+			action: 'tx';
+			target: string;
+			label: string;
+			postUrl: string;
 	  };
 
 export type TextInput = {
@@ -38,7 +60,7 @@ export type OpenFrameResult = {
 	image: OpenFrameImage;
 	postUrl?: string;
 	textInput?: TextInput;
-	buttons?: { [k: string]: OpenFrameButton };
+	buttons?: { [k: string]: OpenFrameButtonResult };
 	ogImage: string;
 	state?: string;
 };

@@ -204,7 +204,7 @@ const testCases = [
 					action: 'tx',
 					label: 'button-1',
 					target: EXPECTED_FRAME_POST_URL,
-					post_url: EXPECTED_FRAME_TX_POST_URL,
+					postUrl: EXPECTED_FRAME_TX_POST_URL,
 				},
 			},
 		},
