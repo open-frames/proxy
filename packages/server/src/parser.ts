@@ -1,4 +1,10 @@
-import type { OpenFrameButton, OpenFrameImage, OpenFrameResult, TransactionResponse } from '@open-frames/proxy-types';
+import type {
+	OpenFrameButton,
+	OpenFrameButtonResult,
+	OpenFrameImage,
+	OpenFrameResult,
+	TransactionResponse,
+} from '@open-frames/proxy-types';
 import { load } from 'cheerio';
 
 import { ALLOWED_ACTIONS, FRAMES_PREFIXES, TAG_PREFIXES } from './constants.js';
@@ -110,7 +116,7 @@ function updateFrameButton(frameInfo: DeepPartial<OpenFrameResult>, key: string,
 		return;
 	}
 	frameInfo.buttons = frameInfo.buttons || {};
-	const button = frameInfo.buttons[buttonIndex] || {};
+	const button = (frameInfo.buttons[buttonIndex] as OpenFrameButtonResult) || {};
 	if (maybeField) {
 		const field = maybeField as keyof OpenFrameButton;
 		if (field === 'action' && isAllowedAction(value)) {
@@ -118,6 +124,9 @@ function updateFrameButton(frameInfo: DeepPartial<OpenFrameResult>, key: string,
 		}
 		if (field === 'target') {
 			button.target = value;
+		}
+		if (field === 'post_url') {
+			button.postUrl = value;
 		}
 	} else {
 		button.label = value;

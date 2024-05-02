@@ -188,8 +188,7 @@ const testCases = [
 			'of:button:1:target': EXPECTED_FRAME_POST_URL,
 			'of:button:1:post_url': EXPECTED_FRAME_TX_POST_URL,
 		},
-		frameInfo: {
-			ogImage: EXPECTED_FRAME_IMAGE,
+		expectedFrameInfo: {
 			acceptedClients: {
 				xmtp: EXPECTED_FRAME_XMTP_VERSION,
 				lens: '2',
@@ -200,13 +199,12 @@ const testCases = [
 				alt: EXPECTED_IMAGE_ALT,
 			},
 			postUrl: EXPECTED_FRAME_POST_URL,
-			state: EXPECTED_FRAME_STATE,
 			buttons: {
 				'1': {
 					action: 'tx',
 					label: 'button-1',
 					target: EXPECTED_FRAME_POST_URL,
-					post_url: EXPECTED_FRAME_TX_POST_URL,
+					postUrl: EXPECTED_FRAME_TX_POST_URL,
 				},
 			},
 		},
