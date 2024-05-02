@@ -14,7 +14,7 @@ export type OpenFrameButton =
 			action: 'link' | 'mint';
 			target: string;
 			label: string;
-			post_url?: string;
+			post_url: never;
 	  }
 	| {
 			action: 'post' | 'post_redirect';
