@@ -49,13 +49,13 @@ const FRAME_URL = 'https://frames.xmtp.chat/';
 
 const initialFrame = await readMetadata(FRAME_URL);
 
-// Extract from above
-const action = initialFrame.buttons['1'].action;
-const target = initialFrame.buttons['1'].target;
-const postUrl = initialFrame.buttons['1'].post_url;
+// Extract current button from above at button index
+const button = frameMetadata.frameInfo.buttons[`${buttonIndex}`];
+
+const { action, target, postUrl } = button;
 
 // If this is a transaction frame, do the below steps
-const isTransaction = action === 'tx' && target && postUrl;
+const isTransactionFrame = action === 'tx';
 
 // First, make a POST request to the `target` URL to fetch data about the transaction, with a signed frame action payload in the POST body including the address of the connected wallet in the `address` field.
 const transactionInfo: {
