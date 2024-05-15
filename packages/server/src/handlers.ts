@@ -164,7 +164,7 @@ export async function downloadAndExtract(url: string, maxMetaTagSize?: number | 
 	const response = await fetch(url, { redirect: 'follow', signal });
 	//   TODO: Better error handling
 	if (response.status >= 400) {
-		throw new ErrorResponse(`Request to ${url} failed`, response.status);
+		throw new ErrorResponse(`Request to ${url} failed with status ${response.status}`, response.status);
 	}
 
 	const headersToForward = extractCacheHeaders(response.headers);
