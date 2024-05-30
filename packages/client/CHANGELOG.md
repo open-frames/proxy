@@ -1,5 +1,12 @@
 # @open-frames/proxy-client
 
+## 0.3.3
+
+### Patch Changes
+
+- Updated dependencies [68d5301]
+  - @open-frames/proxy-types@0.2.3
+
 ## 0.3.2
 
 ### Patch Changes
