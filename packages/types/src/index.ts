@@ -73,7 +73,7 @@ export type GetMetadataResponse = {
 
 export type TransactionResponse = {
 	chainId: string;
-	method: 'eth_sendTransaction';
+	method: 'eth_sendTransaction' | 'eth_personalSign';
 	params: {
 		abi: Array<unknown>;
 		to: string;
