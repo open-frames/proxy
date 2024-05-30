@@ -1,6 +1,6 @@
 {
 	"name": "@open-frames/proxy-types",
-	"version": "0.2.2",
+	"version": "0.2.3",
 	"types": "dist/index.d.ts",
 	"packageManager": "yarn@4.1.0",
 	"type": "module",

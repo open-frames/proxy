@@ -1,5 +1,11 @@
 # @open-frames/proxy-types
 
+## 0.2.3
+
+### Patch Changes
+
+- 68d5301: add personalSign type
+
 ## 0.2.2
 
 ### Patch Changes
